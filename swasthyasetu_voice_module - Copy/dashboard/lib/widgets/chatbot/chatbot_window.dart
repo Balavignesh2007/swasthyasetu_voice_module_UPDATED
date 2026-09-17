@@ -68,10 +68,10 @@ class _ChatbotWindowState extends State<ChatbotWindow> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final isMobile = screenSize.width < 540;
+    final isMobile = screenSize.width < 600;
 
-    final windowWidth = isMobile ? screenSize.width - 24 : 400.0;
-    final windowHeight = isMobile ? screenSize.height * 0.75 : 560.0;
+    final windowWidth = isMobile ? double.infinity : 400.0;
+    final windowHeight = isMobile ? double.infinity : 560.0;
 
     return Container(
       width: windowWidth,

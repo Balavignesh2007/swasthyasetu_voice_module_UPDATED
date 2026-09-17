@@ -136,9 +136,30 @@ class _GlobalChatbotState extends State<GlobalChatbot> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
+    if (isMobile && _isOpen) {
+      return Positioned(
+        left: 8,
+        right: 8,
+        bottom: 8,
+        top: 8,
+        child: ChatbotWindow(
+          messages: _messages,
+          isLoading: _isLoading,
+          isOnline: _isOnline,
+          themeColor: widget.themeColor,
+          onClose: () => setState(() => _isOpen = false),
+          onClear: _handleClear,
+          onSend: _handleSendMessage,
+          onCheckOnline: _checkHealth,
+        ),
+      );
+    }
+
     return Positioned(
-      bottom: 24,
-      right: 24,
+      bottom: isMobile ? 12 : 24,
+      right: isMobile ? 12 : 24,
       child: _isOpen
           ? ChatbotWindow(
               messages: _messages,
