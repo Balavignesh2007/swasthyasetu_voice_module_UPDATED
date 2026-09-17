@@ -1,3 +1,4 @@
+# Flutter/Dart
 .dart_tool/
 .packages
 build/
@@ -5,9 +6,25 @@ build/
 .flutter-plugins-dependencies
 *.iml
 .idea/
-android/
+
+# Android build outputs & local config (do NOT ignore android/ source folder!)
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+android/**/GeneratedPluginRegistrant.java
+android/.cxx/
+android/app/build/
+
+# iOS/Desktop platforms not configured
 ios/
-web/
 linux/
 macos/
 windows/
+
+# App packages
+*.apk
+*.aab
+*.app
+
