@@ -49,37 +49,46 @@ class _PatientReferralsViewState extends State<PatientReferralsView> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F9),
       body: RefreshIndicator(
         onRefresh: _loadReferrals,
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Hospital Referrals & Secondary Care',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E293B),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hospital Referrals & Secondary Care',
+                          style: TextStyle(
+                            fontSize: isMobile ? 18 : 22,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF1E293B),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Specialist facilities recommended by doctor for advanced treatment',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          'Specialist facilities recommended by doctor for advanced treatment',
+                          style: TextStyle(fontSize: isMobile ? 12 : 13, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                   ),
-                  IconButton(icon: const Icon(Icons.refresh), onPressed: _loadReferrals),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: _loadReferrals,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
                 ],
               ),
               const SizedBox(height: 16),

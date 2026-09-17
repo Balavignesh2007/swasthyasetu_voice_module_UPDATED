@@ -748,7 +748,11 @@ class _PatientHomeViewState extends State<PatientHomeView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 6,
             children: [
               // Pulsing / glowing radar badge
               Container(
@@ -791,7 +795,6 @@ class _PatientHomeViewState extends State<PatientHomeView> {
                   ],
                 ),
               ),
-              const Spacer(),
               // Accuracy Tag
               Text(
                 '±${locService.accuracyMeters.toStringAsFixed(1)} m ${loc.t('gps_accuracy')}',
@@ -800,51 +803,51 @@ class _PatientHomeViewState extends State<PatientHomeView> {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      locService.locationName,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.explore_outlined, size: 13, color: Color(0xFF64748B)),
-                        const SizedBox(width: 4),
-                        Text(
-                          locService.coordinatesDisplay,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'monospace',
-                            color: Color(0xFF475569),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF1F5F9),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Text(
-                            'Maharashtra, India',
-                            style: TextStyle(fontSize: 10, color: Color(0xFF475569)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              Text(
+                locService.locationName,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0F172A),
                 ),
+              ),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.explore_outlined, size: 13, color: Color(0xFF64748B)),
+                      const SizedBox(width: 4),
+                      Text(
+                        locService.coordinatesDisplay,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'monospace',
+                          color: Color(0xFF475569),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'Maharashtra, India',
+                      style: TextStyle(fontSize: 10, color: Color(0xFF475569)),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -929,16 +932,19 @@ class _PatientHomeViewState extends State<PatientHomeView> {
     return AnimatedBuilder(
       animation: Listenable.merge([locService, loc]),
       builder: (context, _) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final isMobile = screenWidth < 768;
+
         return Scaffold(
           backgroundColor: const Color(0xFFF4F6F9),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(isMobile ? 12 : 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Patient Welcome Banner
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(isMobile ? 16 : 20),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF1D4ED8), Color(0xFF2563EB)],
@@ -950,43 +956,90 @@ class _PatientHomeViewState extends State<PatientHomeView> {
                       BoxShadow(color: const Color(0xFF1D4ED8).withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4)),
                     ],
                   ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.white.withValues(alpha: 0.2),
-                        child: const Icon(Icons.person, color: Colors.white, size: 32),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
+                  child: isMobile
+                      ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${loc.t('welcome_patient')} ${widget.session.name}',
-                              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 24,
+                                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                                  child: const Icon(Icons.person, color: Colors.white, size: 28),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${loc.t('welcome_patient')} ${widget.session.name}',
+                                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Health ID: ${widget.session.identifier} • ${locService.locationName}',
+                                        style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Health ID: ${widget.session.identifier} • ${locService.locationName}',
-                              style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13),
+                            const SizedBox(height: 14),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red.shade600,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                ),
+                                icon: const Icon(Icons.warning_amber_rounded),
+                                label: Text(loc.t('emergency_sos'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: _triggerEmergency,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 28,
+                              backgroundColor: Colors.white.withValues(alpha: 0.2),
+                              child: const Icon(Icons.person, color: Colors.white, size: 32),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${loc.t('welcome_patient')} ${widget.session.name}',
+                                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Health ID: ${widget.session.identifier} • ${locService.locationName}',
+                                    style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Emergency Quick Button
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red.shade600,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              ),
+                              icon: const Icon(Icons.warning_amber_rounded),
+                              label: Text(loc.t('emergency_sos'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                              onPressed: _triggerEmergency,
                             ),
                           ],
                         ),
-                      ),
-                      // Emergency Quick Button
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade600,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        ),
-                        icon: const Icon(Icons.warning_amber_rounded),
-                        label: Text(loc.t('emergency_sos'), style: const TextStyle(fontWeight: FontWeight.bold)),
-                        onPressed: _triggerEmergency,
-                      ),
-                    ],
-                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -1017,15 +1070,23 @@ class _PatientHomeViewState extends State<PatientHomeView> {
                 _buildLiveGpsCard(locService, loc),
 
                 // LOCATION-BASED HEALTHCARE SERVICES (MEDICINE & DIAGNOSTIC AVAILABILITY)
-                Row(
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 6,
                   children: [
-                    const Icon(Icons.near_me_rounded, color: Color(0xFF059669), size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      loc.t('nearby_healthcare_title'),
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: Color(0xFF334155)),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.near_me_rounded, color: Color(0xFF059669), size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          loc.t('nearby_healthcare_title'),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: Color(0xFF334155)),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
@@ -1051,143 +1112,146 @@ class _PatientHomeViewState extends State<PatientHomeView> {
             LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth > 700;
-                final cards = [
-                  // 1. Medicine Availability Card
-                  Expanded(
-                    flex: isWide ? 1 : 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF065F46), Color(0xFF059669)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(color: const Color(0xFF059669).withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 3)),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                final medCard = Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF065F46), Color(0xFF059669)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF059669).withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 3)),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(Icons.local_pharmacy_rounded, color: Colors.white, size: 24),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(loc.t('medicine_availability'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                                    Text(loc.t('medicine_availability_sub'), style: const TextStyle(fontSize: 11, color: Colors.white70)),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.local_pharmacy_rounded, color: Colors.white, size: 24),
                           ),
-                          const SizedBox(height: 12),
-                          const Text(
-                             'Live real-time inventory from Shivaji Nagar PHC, Jan Aushadhi Stores & Govt Hospitals within 10 km.',
-                             style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.3),
-                           ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.search_rounded, size: 16),
-                              label: Text(loc.t('check_medicine_stock'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF065F46),
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              ),
-                              onPressed: _showNearbyMedicineDialog,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(loc.t('medicine_availability'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                                Text(loc.t('medicine_availability_sub'), style: const TextStyle(fontSize: 11, color: Colors.white70)),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  if (isWide) const SizedBox(width: 16) else const SizedBox(height: 12),
-                  // 2. Diagnostic Centres Card
-                  Expanded(
-                    flex: isWide ? 1 : 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF3730A3), Color(0xFF4F46E5)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                      const SizedBox(height: 12),
+                      const Text(
+                         'Live real-time inventory from Shivaji Nagar PHC, Jan Aushadhi Stores & Govt Hospitals within 10 km.',
+                         style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.3),
+                       ),
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.search_rounded, size: 16),
+                          label: Text(loc.t('check_medicine_stock'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF065F46),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          onPressed: _showNearbyMedicineDialog,
                         ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(color: const Color(0xFF4F46E5).withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 3)),
-                        ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ],
+                  ),
+                );
+
+                final diagCard = Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF3730A3), Color(0xFF4F46E5)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF4F46E5).withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 3)),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 24),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(loc.t('diagnostic_centres'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                                    Text(loc.t('diagnostic_centres_sub'), style: const TextStyle(fontSize: 11, color: Colors.white70)),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 24),
                           ),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'CBC, Blood Sugar, Thyroid, X-Ray & ECG test slots with transparent pricing and turnaround times.',
-                            style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.3),
-                          ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.location_searching_rounded, size: 16),
-                              label: Text(loc.t('find_diagnostic_centres'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF3730A3),
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              ),
-                              onPressed: _showNearbyDiagnosticsDialog,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(loc.t('diagnostic_centres'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                                Text(loc.t('diagnostic_centres_sub'), style: const TextStyle(fontSize: 11, color: Colors.white70)),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'CBC, Blood Sugar, Thyroid, X-Ray & ECG test slots with transparent pricing and turnaround times.',
+                        style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.3),
+                      ),
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.location_searching_rounded, size: 16),
+                          label: Text(loc.t('find_diagnostic_centres'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF3730A3),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          onPressed: _showNearbyDiagnosticsDialog,
+                        ),
+                      ),
+                    ],
                   ),
-                ];
+                );
 
                 return isWide
-                    ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: cards)
-                    : Column(children: cards);
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: medCard),
+                          const SizedBox(width: 16),
+                          Expanded(child: diagCard),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          medCard,
+                          const SizedBox(height: 12),
+                          diagCard,
+                        ],
+                      );
               },
             ),
             const SizedBox(height: 24),

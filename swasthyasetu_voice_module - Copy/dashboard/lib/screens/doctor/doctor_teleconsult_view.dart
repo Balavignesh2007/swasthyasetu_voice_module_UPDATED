@@ -220,130 +220,224 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
       backgroundColor: const Color(0xFFF8FAFC),
       body: RefreshIndicator(
         onRefresh: _loadData,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header & Instant CTA
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 768;
+            final kpiWidth = constraints.maxWidth > 700
+                ? (constraints.maxWidth - 36) / 4
+                : (constraints.maxWidth - 12) / 2;
+
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(isMobile ? 12.0 : 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Doctor Teleconsultation Hub',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0F172A),
+                  // Header & Instant CTA
+                  if (isMobile)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Text(
+                              'Doctor Teleconsultation Hub',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0F172A),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEFF6FF),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: const Color(0xFFBFDBFE)),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.wifi_tethering_rounded, color: Color(0xFF2563EB), size: 13),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Jitsi Active',
+                                    style: TextStyle(color: Color(0xFF2563EB), fontSize: 10.5, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Direct video consultations with rural patients and ASHA health centers',
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: _showInstantRoomDialog,
+                            icon: const Icon(Icons.video_call_rounded, size: 20),
+                            label: const Text('Start Instant Video Room'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2563EB),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              elevation: 1,
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFBFDBFE)),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Icon(Icons.wifi_tethering_rounded, color: Color(0xFF2563EB), size: 14),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Jitsi WebRTC Active',
-                                  style: TextStyle(color: Color(0xFF2563EB), fontSize: 11, fontWeight: FontWeight.bold),
+                                const Text(
+                                  'Doctor Teleconsultation Hub',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF0F172A),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFEFF6FF),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: const Color(0xFFBFDBFE)),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.wifi_tethering_rounded, color: Color(0xFF2563EB), size: 14),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Jitsi WebRTC Active',
+                                        style: TextStyle(color: Color(0xFF2563EB), fontSize: 11, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Direct, high-definition video consultations with rural patients and ASHA health centers',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  ElevatedButton.icon(
-                    onPressed: _showInstantRoomDialog,
-                    icon: const Icon(Icons.video_call_rounded, size: 20),
-                    label: const Text('Start Instant Video Room'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      elevation: 2,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // KPI Stats Grid
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 700;
-                  final width = isWide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2;
-                  return Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: [
-                      _kpiCard('Scheduled Teleconsults', '${_appointments.length}', Icons.video_camera_front_rounded, const Color(0xFF2563EB), width),
-                      _kpiCard('Awaiting Video Call', '$_pendingCount', Icons.pending_actions_rounded, const Color(0xFFD97706), width),
-                      _kpiCard('Emergency Priority', '$_emergencyCount', Icons.emergency_rounded, const Color(0xFFDC2626), width),
-                      _kpiCard('Completed & Prescribed', '$_completedCount', Icons.check_circle_outline_rounded, const Color(0xFF16A34A), width),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Search & Filter Bar
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: Color(0xFFE2E8F0)),
-                ),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          onChanged: (val) => setState(() => _searchQuery = val.trim()),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
-                            hintText: 'Search teleconsultation patients by name, village, ABHA, or symptoms...',
-                            hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
-                            border: InputBorder.none,
-                            isDense: true,
+                            const SizedBox(height: 4),
+                            Text(
+                              'Direct, high-definition video consultations with rural patients and ASHA health centers',
+                              style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        ElevatedButton.icon(
+                          onPressed: _showInstantRoomDialog,
+                          icon: const Icon(Icons.video_call_rounded, size: 20),
+                          label: const Text('Start Instant Video Room'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2563EB),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            elevation: 2,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      _filterChip('All', 'ALL'),
-                      const SizedBox(width: 6),
-                      _filterChip('Awaiting Consult', 'PENDING'),
-                      const SizedBox(width: 6),
-                      _filterChip('Emergency', 'EMERGENCY'),
-                      const SizedBox(width: 6),
-                      _filterChip('Completed', 'COMPLETED'),
+                      ],
+                    ),
+                  const SizedBox(height: 16),
+
+                  // KPI Stats Grid
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      _kpiCard('Scheduled Teleconsults', '${_appointments.length}', Icons.video_camera_front_rounded, const Color(0xFF2563EB), kpiWidth, isMobile: isMobile),
+                      _kpiCard('Awaiting Video Call', '$_pendingCount', Icons.pending_actions_rounded, const Color(0xFFD97706), kpiWidth, isMobile: isMobile),
+                      _kpiCard('Emergency Priority', '$_emergencyCount', Icons.emergency_rounded, const Color(0xFFDC2626), kpiWidth, isMobile: isMobile),
+                      _kpiCard('Completed & Prescribed', '$_completedCount', Icons.check_circle_outline_rounded, const Color(0xFF16A34A), kpiWidth, isMobile: isMobile),
                     ],
                   ),
-                ),
-              ),
+                  const SizedBox(height: 18),
+
+                  // Search & Filter Bar
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    ),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: EdgeInsets.all(isMobile ? 10.0 : 14.0),
+                      child: isMobile
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextField(
+                                  onChanged: (val) => setState(() => _searchQuery = val.trim()),
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 18),
+                                    hintText: 'Search patients, village, ABHA...',
+                                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                  ),
+                                ),
+                                const Divider(height: 10),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _filterChip('All', 'ALL'),
+                                      const SizedBox(width: 6),
+                                      _filterChip('Awaiting Consult', 'PENDING'),
+                                      const SizedBox(width: 6),
+                                      _filterChip('Emergency', 'EMERGENCY'),
+                                      const SizedBox(width: 6),
+                                      _filterChip('Completed', 'COMPLETED'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: (val) => setState(() => _searchQuery = val.trim()),
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
+                                      hintText: 'Search teleconsultation patients by name, village, ABHA, or symptoms...',
+                                      hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                _filterChip('All', 'ALL'),
+                                const SizedBox(width: 6),
+                                _filterChip('Awaiting Consult', 'PENDING'),
+                                const SizedBox(width: 6),
+                                _filterChip('Emergency', 'EMERGENCY'),
+                                const SizedBox(width: 6),
+                                _filterChip('Completed', 'COMPLETED'),
+                              ],
+                            ),
+                    ),
+                  ),
               const SizedBox(height: 18),
 
               // Appointments Content
@@ -403,9 +497,11 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
                 ),
             ],
           ),
-        ),
-      ),
-    );
+        );
+      },
+    ),
+  ),
+);
   }
 
   Widget _filterChip(String label, String value) {
@@ -425,10 +521,10 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
     );
   }
 
-  Widget _kpiCard(String label, String value, IconData icon, Color color, double width) {
+  Widget _kpiCard(String label, String value, IconData icon, Color color, double width, {bool isMobile = false}) {
     return Container(
       width: width,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isMobile ? 10 : 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -444,26 +540,33 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(isMobile ? 8 : 12),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: isMobile ? 20 : 24),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: isMobile ? 8 : 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   value,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: color),
+                  style: TextStyle(fontSize: isMobile ? 18 : 22, fontWeight: FontWeight.bold, color: color),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: isMobile ? 10.5 : 12,
+                    color: const Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                    height: 1.2,
+                  ),
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -499,7 +602,10 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Top Status Bar
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -513,7 +619,6 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
                     style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8), fontSize: 12),
                   ),
                 ),
-                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
@@ -525,10 +630,8 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
                     style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF334155), fontSize: 12),
                   ),
                 ),
-                const Spacer(),
                 if (isEmergency)
                   Container(
-                    margin: const EdgeInsets.only(right: 8),
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
@@ -662,78 +765,86 @@ class _DoctorTeleconsultViewState extends State<DoctorTeleconsultView> {
 
             // Bottom Action Bar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: const Color(0xFFE2E8F0)),
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.link, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      'Jitsi Room: $roomName',
-                      style: TextStyle(fontSize: 11.5, color: Colors.grey[700], fontFamily: 'monospace'),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  // Copy Link
-                  OutlinedButton.icon(
-                    onPressed: () async {
-                      await JitsiService.copyInviteLink(patientInviteUrl);
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Patient teleconsult link copied!'),
-                          backgroundColor: Color(0xFF0F766E),
-                          duration: Duration(seconds: 2),
+                  Row(
+                    children: [
+                      Icon(Icons.link, size: 16, color: Colors.grey[600]),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          'Jitsi Room: $roomName',
+                          style: TextStyle(fontSize: 11.5, color: Colors.grey[700], fontFamily: 'monospace'),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.copy_rounded, size: 14),
-                    label: const Text('Copy Link', style: TextStyle(fontSize: 12)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF334155),
-                      side: const BorderSide(color: Color(0xFFCBD5E1)),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    ),
-                  ),
-                  if (appt.patientPhone != null && appt.patientPhone!.isNotEmpty) ...[
-                    const SizedBox(width: 8),
-                    OutlinedButton.icon(
-                      onPressed: () async {
-                        final waUrl = JitsiService.getWhatsAppInviteUrl(
-                          roomName: roomName,
-                          doctorName: widget.session.name,
-                          patientPhone: appt.patientPhone,
-                          patientName: appt.patientName,
-                        );
-                        if (waUrl != null) await JitsiService.launchMeeting(waUrl);
-                      },
-                      icon: const Icon(Icons.chat_bubble_outline_rounded, size: 14),
-                      label: const Text('WhatsApp', style: TextStyle(fontSize: 12)),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF059669),
-                        side: const BorderSide(color: Color(0xFF6EE7B7)),
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
-                    ),
-                  ],
-                  const SizedBox(width: 10),
-                  // Primary Action: Video Consult
-                  ElevatedButton.icon(
-                    onPressed: () => _openConsultationDialog(appt),
-                    icon: const Icon(Icons.videocam_rounded, size: 16),
-                    label: const Text('Start Video Consult', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      elevation: 0,
-                    ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () async {
+                          await JitsiService.copyInviteLink(patientInviteUrl);
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Patient teleconsult link copied!'),
+                              backgroundColor: Color(0xFF0F766E),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.copy_rounded, size: 14),
+                        label: const Text('Copy Link', style: TextStyle(fontSize: 12)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF334155),
+                          side: const BorderSide(color: Color(0xFFCBD5E1)),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        ),
+                      ),
+                      if (appt.patientPhone != null && appt.patientPhone!.isNotEmpty)
+                        OutlinedButton.icon(
+                          onPressed: () async {
+                            final waUrl = JitsiService.getWhatsAppInviteUrl(
+                              roomName: roomName,
+                              doctorName: widget.session.name,
+                              patientPhone: appt.patientPhone,
+                              patientName: appt.patientName,
+                            );
+                            if (waUrl != null) await JitsiService.launchMeeting(waUrl);
+                          },
+                          icon: const Icon(Icons.chat_bubble_outline_rounded, size: 14),
+                          label: const Text('WhatsApp', style: TextStyle(fontSize: 12)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF059669),
+                            side: const BorderSide(color: Color(0xFF6EE7B7)),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          ),
+                        ),
+                      ElevatedButton.icon(
+                        onPressed: () => _openConsultationDialog(appt),
+                        icon: const Icon(Icons.videocam_rounded, size: 16),
+                        label: const Text('Start Video Call', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2563EB),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          elevation: 0,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

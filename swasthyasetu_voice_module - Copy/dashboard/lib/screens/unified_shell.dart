@@ -387,53 +387,89 @@ class _UnifiedShellState extends State<UnifiedShell> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                loc.t('platform_title'),
-                                style: TextStyle(
-                                  fontSize: isMobile ? 15 : 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF0F172A),
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                        if (isMobile) ...[
+                          Text(
+                            loc.t('platform_title'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0F172A),
                             ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: _themeColor.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                _session.role.displayName.toUpperCase(),
-                                style: TextStyle(
-                                  fontSize: isMobile ? 9 : 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: _themeColor,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: _themeColor.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  _session.role.displayName.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: _themeColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        if (!isMobile)
+                              if (_session.role == UserRole.patient) ...[
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    '📍 ${locService.locationName.split(',').first}, MH',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: locService.isLiveGps ? const Color(0xFF059669) : const Color(0xFF1D4ED8),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ] else ...[
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  loc.t('platform_title'),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF0F172A),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: _themeColor.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  _session.role.displayName.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: _themeColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           Text(
                             loc.t('platform_subtitle'),
                             style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                             overflow: TextOverflow.ellipsis,
-                          )
-                        else if (_session.role == UserRole.patient)
-                          Text(
-                            '📍 ${locService.locationName.split(',').first}, MH',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: locService.isLiveGps ? const Color(0xFF059669) : const Color(0xFF1D4ED8),
-                            ),
-                            overflow: TextOverflow.ellipsis,
                           ),
+                        ],
                       ],
                     ),
                   ),
