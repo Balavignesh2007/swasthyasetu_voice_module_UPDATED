@@ -83,34 +83,49 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
       body: Column(
         children: [
           // PHC Header banner
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4338CA).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
+          Builder(
+            builder: (context) {
+              final isMobile = MediaQuery.of(context).size.width < 768;
+              if (isMobile) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
                   ),
-                  child: const Icon(Icons.local_hospital_rounded, color: Color(0xFF4338CA), size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Text(
-                            _facilityStatus?['facility']?['name'] ?? 'Shivaji Nagar PHC',
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF4338CA).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.local_hospital_rounded, color: Color(0xFF4338CA), size: 24),
                           ),
                           const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _facilityStatus?['facility']?['name'] ?? 'Shivaji Nagar PHC',
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF4338CA)),
+                            tooltip: 'Refresh Metrics',
+                            onPressed: _loadAllData,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
@@ -119,26 +134,78 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
                             ),
                             child: const Text(
                               'PHC ADMINISTRATION',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF4338CA)),
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF4338CA)),
                             ),
+                          ),
+                          Text(
+                            'District: ${_facilityStatus?['facility']?['district'] ?? "Pune Rural"} • Beds: ${_facilityStatus?['facility']?['beds_available'] ?? 14} Avail',
+                            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'District: ${_facilityStatus?['facility']?['district'] ?? "Pune Rural"} • Total Beds: ${_facilityStatus?['facility']?['beds_total'] ?? 20} • Beds Available: ${_facilityStatus?['facility']?['beds_available'] ?? 14}',
-                        style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-                      ),
                     ],
                   ),
+                );
+              }
+
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.refresh_rounded, color: Color(0xFF4338CA)),
-                  tooltip: 'Refresh Metrics',
-                  onPressed: _loadAllData,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4338CA).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.local_hospital_rounded, color: Color(0xFF4338CA), size: 28),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                _facilityStatus?['facility']?['name'] ?? 'Shivaji Nagar PHC',
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE0E7FF),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  'PHC ADMINISTRATION',
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF4338CA)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'District: ${_facilityStatus?['facility']?['district'] ?? "Pune Rural"} • Total Beds: ${_facilityStatus?['facility']?['beds_total'] ?? 20} • Beds Available: ${_facilityStatus?['facility']?['beds_available'] ?? 14}',
+                            style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.refresh_rounded, color: Color(0xFF4338CA)),
+                      tooltip: 'Refresh Metrics',
+                      onPressed: _loadAllData,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
 
           // Tabs
@@ -146,11 +213,13 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
             color: Colors.white,
             child: TabBar(
               controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
               labelColor: const Color(0xFF4338CA),
               unselectedLabelColor: const Color(0xFF64748B),
               indicatorColor: const Color(0xFF4338CA),
               indicatorWeight: 3,
-              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               tabs: const [
                 Tab(icon: Icon(Icons.speed_rounded), text: 'QUALITY DASHBOARD'),
                 Tab(icon: Icon(Icons.dashboard_customize_rounded), text: 'OPERATIONS & AVAILABILITY'),
@@ -269,100 +338,115 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
           const SizedBox(height: 24),
 
           // Stock-out details & Emergency escalations row
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Stock-out list
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 20),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Medicine Stock-Out Alert',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isWide = constraints.maxWidth > 800;
+
+              final stockoutCard = Container(
+                width: isWide ? null : double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 20),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Medicine Stock-Out Alert',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(4),
                           ),
-                          const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              '${q.stockoutCount} Items Zero Stock',
-                              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 11),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      if (q.stockoutItems.isEmpty)
-                        const Text('All essential medicines are currently in stock.', style: TextStyle(color: Colors.green))
-                      else
-                        ...q.stockoutItems.map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.cancel, color: Colors.red, size: 16),
-                                const SizedBox(width: 8),
-                                Text(item, style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF334155))),
-                                const Spacer(),
-                                const Text('Critical PHC Item', style: TextStyle(fontSize: 12, color: Colors.red)),
-                              ],
-                            ),
+                          child: Text(
+                            '${q.stockoutCount} Items Zero Stock',
+                            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 11),
                           ),
                         ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-
-              // Service Volume Trends
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.trending_up_rounded, color: Color(0xFF4338CA), size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'Patient Service Volume & Trends',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    if (q.stockoutItems.isEmpty)
+                      const Text('All essential medicines are currently in stock.', style: TextStyle(color: Colors.green))
+                    else
+                      ...q.stockoutItems.map(
+                        (item) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.cancel, color: Colors.red, size: 16),
+                              const SizedBox(width: 8),
+                              Expanded(child: Text(item, style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF334155)))),
+                              const SizedBox(width: 8),
+                              const Text('Critical PHC Item', style: TextStyle(fontSize: 12, color: Colors.red)),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      _buildTrendRow('Total Triage Cases', q.serviceTrends['cases']),
-                      _buildTrendRow('OPD Appointments', q.serviceTrends['appointments']),
-                      _buildTrendRow('Prescriptions Generated', q.serviceTrends['prescriptions']),
-                      _buildTrendRow('Lab Orders Initiated', q.serviceTrends['lab_orders']),
-                      _buildTrendRow('Referrals Escalated', q.serviceTrends['referrals']),
-                    ],
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              );
+
+              final trendsCard = Container(
+                width: isWide ? null : double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.trending_up_rounded, color: Color(0xFF4338CA), size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Patient Service Volume & Trends',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTrendRow('Total Triage Cases', q.serviceTrends['cases']),
+                    _buildTrendRow('OPD Appointments', q.serviceTrends['appointments']),
+                    _buildTrendRow('Prescriptions Generated', q.serviceTrends['prescriptions']),
+                    _buildTrendRow('Lab Orders Initiated', q.serviceTrends['lab_orders']),
+                    _buildTrendRow('Referrals Escalated', q.serviceTrends['referrals']),
+                  ],
+                ),
+              );
+
+              if (isWide) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: stockoutCard),
+                    const SizedBox(width: 16),
+                    Expanded(child: trendsCard),
+                  ],
+                );
+              }
+
+              return Column(
+                children: [
+                  stockoutCard,
+                  const SizedBox(height: 16),
+                  trendsCard,
+                ],
+              );
+            },
           ),
         ],
       ),

@@ -146,22 +146,45 @@ class _AdminAnalyticsViewState extends State<AdminAnalyticsView> {
               else if (_report != null) ...[
                 _buildKpiGrid(_report!.kpis),
                 const SizedBox(height: 28),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 3, child: _buildSpecialtyCard(_report!.specialtyDistribution)),
-                    const SizedBox(width: 20),
-                    Expanded(flex: 4, child: _buildFacilityTable(_report!.facilityStats)),
-                  ],
-                ),
-                const SizedBox(height: 28),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 3, child: _buildVillageCard(_report!.villageCoverage)),
-                    const SizedBox(width: 20),
-                    Expanded(flex: 4, child: _buildActivityFeed(_report!.activityLog)),
-                  ],
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isWide = constraints.maxWidth > 900;
+                    if (isWide) {
+                      return Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 3, child: _buildSpecialtyCard(_report!.specialtyDistribution)),
+                              const SizedBox(width: 20),
+                              Expanded(flex: 4, child: _buildFacilityTable(_report!.facilityStats)),
+                            ],
+                          ),
+                          const SizedBox(height: 28),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 3, child: _buildVillageCard(_report!.villageCoverage)),
+                              const SizedBox(width: 20),
+                              Expanded(flex: 4, child: _buildActivityFeed(_report!.activityLog)),
+                            ],
+                          ),
+                        ],
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        _buildSpecialtyCard(_report!.specialtyDistribution),
+                        const SizedBox(height: 20),
+                        _buildFacilityTable(_report!.facilityStats),
+                        const SizedBox(height: 20),
+                        _buildVillageCard(_report!.villageCoverage),
+                        const SizedBox(height: 20),
+                        _buildActivityFeed(_report!.activityLog),
+                      ],
+                    );
+                  },
                 ),
               ],
             ],
@@ -172,71 +195,87 @@ class _AdminAnalyticsViewState extends State<AdminAnalyticsView> {
   }
 
   Widget _buildHeader() {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
+    final titleSection = Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEEF2FF),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(Icons.analytics_rounded, color: Color(0xFF4338CA), size: 28),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Healthcare System Analytics',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              Text(
+                'Real-time operations monitor for Doctors, ASHA Network, and Patients',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final actionButtons = Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        OutlinedButton.icon(
+          onPressed: _showExportSummaryDialog,
+          icon: const Icon(Icons.download_rounded, size: 18),
+          label: const Text('Audit Summary'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF4338CA),
+            side: const BorderSide(color: Color(0xFFC7D2FE)),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: _loadData,
+          icon: const Icon(Icons.refresh, size: 18),
+          label: const Text('Refresh Data'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF4338CA),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ],
+    );
+
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleSection,
+          const SizedBox(height: 12),
+          actionButtons,
+        ],
+      );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEEF2FF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.analytics_rounded, color: Color(0xFF4338CA), size: 28),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Healthcare System Analytics & Intelligence',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
-                      ),
-                    ),
-                    Text(
-                      'Real-time operations monitor for Doctors, ASHA Network, Facilities, and Rural Patients',
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            OutlinedButton.icon(
-              onPressed: _showExportSummaryDialog,
-              icon: const Icon(Icons.download_rounded, size: 18),
-              label: const Text('Audit Summary'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF4338CA),
-                side: const BorderSide(color: Color(0xFFC7D2FE)),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-            const SizedBox(width: 10),
-            ElevatedButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Refresh Data'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4338CA),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ],
-        ),
+        Expanded(child: titleSection),
+        const SizedBox(width: 16),
+        actionButtons,
       ],
     );
   }
@@ -244,14 +283,17 @@ class _AdminAnalyticsViewState extends State<AdminAnalyticsView> {
   Widget _buildKpiGrid(Map<String, int> k) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = constraints.maxWidth > 1100 ? 4 : (constraints.maxWidth > 700 ? 3 : 2);
+        final crossAxisCount = constraints.maxWidth > 1100
+            ? 4
+            : (constraints.maxWidth > 700 ? 3 : (constraints.maxWidth > 480 ? 2 : 1));
+        final aspectRatio = crossAxisCount == 1 ? 2.5 : (crossAxisCount == 2 ? 1.4 : 1.85);
         return GridView.count(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: 1.85,
+          childAspectRatio: aspectRatio,
           children: [
             _kpiCard(
               title: 'Registered Doctors',

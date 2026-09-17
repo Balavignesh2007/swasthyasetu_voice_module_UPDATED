@@ -782,57 +782,68 @@ class _AshaPatientsViewState extends State<AshaPatientsView> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              backgroundColor: const Color(0xFFE0F2FE),
-                                              radius: 22,
-                                              child: Text(
-                                                p.name.isNotEmpty ? p.name[0].toUpperCase() : 'P',
-                                                style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0284C7), fontSize: 16),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 14),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
+                                        child: Builder(
+                                          builder: (context) {
+                                            final isMobile = MediaQuery.of(context).size.width < 700;
+                                            final patientInfo = Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: const Color(0xFFE0F2FE),
+                                                  radius: 22,
+                                                  child: Text(
+                                                    p.name.isNotEmpty ? p.name[0].toUpperCase() : 'P',
+                                                    style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0284C7), fontSize: 16),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                                      const SizedBox(width: 8),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.teal.shade50,
-                                                          borderRadius: BorderRadius.circular(6),
-                                                          border: Border.all(color: Colors.teal.shade300),
-                                                        ),
-                                                        child: const Text('Active', style: TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.bold, fontSize: 11)),
+                                                      Wrap(
+                                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                                        spacing: 8,
+                                                        runSpacing: 4,
+                                                        children: [
+                                                          Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.teal.shade50,
+                                                              borderRadius: BorderRadius.circular(6),
+                                                              border: Border.all(color: Colors.teal.shade300),
+                                                            ),
+                                                            child: const Text('Active', style: TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.bold, fontSize: 11)),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    'ABHA: ${p.healthId}  •  Village: ${p.village ?? "Assigned Village"}  •  Lang: ${p.preferredLanguage ?? "hi-IN"}',
-                                                    style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.touch_app, size: 13, color: Colors.teal.shade700),
-                                                      const SizedBox(width: 4),
+                                                      const SizedBox(height: 4),
                                                       Text(
-                                                        'Click to view dynamic follow-up dashboard',
-                                                        style: TextStyle(fontSize: 11, color: Colors.teal.shade800, fontWeight: FontWeight.w500),
+                                                        'ABHA: ${p.healthId}  •  Village: ${p.village ?? "Assigned Village"}  •  Lang: ${p.preferredLanguage ?? "hi-IN"}',
+                                                        style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Row(
+                                                        children: [
+                                                          Icon(Icons.touch_app, size: 13, color: Colors.teal.shade700),
+                                                          const SizedBox(width: 4),
+                                                          Expanded(
+                                                            child: Text(
+                                                              'Click to view dynamic follow-up dashboard',
+                                                              style: TextStyle(fontSize: 11, color: Colors.teal.shade800, fontWeight: FontWeight.w500),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            ElevatedButton.icon(
+                                                ),
+                                              ],
+                                            );
+
+                                            final actionBtn = ElevatedButton.icon(
                                               onPressed: () {
                                                 PatientFollowUpDashboardDialog.show(
                                                   context,
@@ -850,8 +861,27 @@ class _AshaPatientsViewState extends State<AshaPatientsView> {
                                                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                               ),
-                                            ),
-                                          ],
+                                            );
+
+                                            if (isMobile) {
+                                              return Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  patientInfo,
+                                                  const SizedBox(height: 10),
+                                                  SizedBox(width: double.infinity, child: actionBtn),
+                                                ],
+                                              );
+                                            }
+
+                                            return Row(
+                                              children: [
+                                                Expanded(child: patientInfo),
+                                                const SizedBox(width: 10),
+                                                actionBtn,
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),

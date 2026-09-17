@@ -199,68 +199,89 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+          Builder(
+            builder: (context) {
+              final isMobile = MediaQuery.of(context).size.width < 768;
+              final titleCol = Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Emergency Alerts & Home Visits',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Village red flags and pending maternal/child health follow-ups',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
+              );
+
+              final statusRow = Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: _isWsConnected ? Colors.green.shade50 : Colors.amber.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _isWsConnected ? Colors.green.shade400 : Colors.amber.shade400,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _isWsConnected ? Colors.green.shade600 : Colors.amber.shade700,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _isWsConnected ? 'LIVE CALL STREAM' : 'CONNECTING...',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: _isWsConnected ? Colors.green.shade800 : Colors.amber.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
+                ],
+              );
+
+              if (isMobile) {
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Emergency Alerts & Home Visits',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E293B),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Village red flags and pending maternal/child health follow-ups',
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                    ),
+                    titleCol,
+                    const SizedBox(height: 10),
+                    statusRow,
                   ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: _isWsConnected ? Colors.green.shade50 : Colors.amber.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: _isWsConnected ? Colors.green.shade400 : Colors.amber.shade400,
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _isWsConnected ? Colors.green.shade600 : Colors.amber.shade700,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _isWsConnected ? 'LIVE CALL STREAM' : 'CONNECTING...',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: _isWsConnected ? Colors.green.shade800 : Colors.amber.shade800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(icon: const Icon(Icons.refresh), onPressed: _loadData),
-                  ],
-                ),
-              ],
-            ),
+                );
+              }
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: titleCol),
+                  statusRow,
+                ],
+              );
+            },
+          ),
             const SizedBox(height: 12),
             TabBar(
               controller: _tabController,

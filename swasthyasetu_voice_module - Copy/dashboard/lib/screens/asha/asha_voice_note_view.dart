@@ -415,82 +415,91 @@ class _AshaVoiceNoteViewState extends State<AshaVoiceNoteView> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Record Patient Voice Symptoms',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Dictate patient symptoms in vernacular language. Submitting auto-creates a Doctor OPD appointment.',
-              style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-            ),
-          ],
+        const Text(
+          'Record Patient Voice Symptoms',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1E293B),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Dictate patient symptoms in vernacular language. Submitting auto-creates a Doctor OPD appointment.',
+          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
         ),
       ],
     );
   }
 
   Widget _buildPatientAndLangSelector() {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
+    final patientDropdown = _loadingPatients
+        ? const LinearProgressIndicator()
+        : DropdownButtonFormField<AshaPatient>(
+            initialValue: _selectedPatient,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              labelText: 'Select Patient',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            ),
+            items: _patients.map((p) {
+              return DropdownMenuItem(
+                value: p,
+                child: Text(
+                  '${p.name} (ABHA: ${p.healthId})',
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 14),
+                ),
+              );
+            }).toList(),
+            onChanged: (p) => setState(() => _selectedPatient = p),
+          );
+
+    final langDropdown = DropdownButtonFormField<String>(
+      initialValue: _selectedLanguage,
+      isExpanded: true,
+      decoration: const InputDecoration(
+        labelText: 'Speech Language',
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+      items: const [
+        DropdownMenuItem(value: 'hi', child: Text('Hindi (हिन्दी)')),
+        DropdownMenuItem(value: 'te', child: Text('Telugu (తెలుగు)')),
+        DropdownMenuItem(value: 'mr', child: Text('Marathi (मराठी)')),
+        DropdownMenuItem(value: 'ta', child: Text('Tamil (தமிழ்)')),
+        DropdownMenuItem(value: 'en', child: Text('English (Indian)')),
+      ],
+      onChanged: (lang) => setState(() => _selectedLanguage = lang ?? 'hi'),
+    );
+
     return Card(
       color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: _loadingPatients
-                  ? const LinearProgressIndicator()
-                  : DropdownButtonFormField<AshaPatient>(
-                      initialValue: _selectedPatient,
-                      decoration: const InputDecoration(
-                        labelText: 'Select Patient',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      ),
-                      items: _patients.map((p) {
-                        return DropdownMenuItem(
-                          value: p,
-                          child: Text('${p.name} (ABHA: ${p.healthId}, ${p.village ?? "Village"})'),
-                        );
-                      }).toList(),
-                      onChanged: (p) => setState(() => _selectedPatient = p),
-                    ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              flex: 1,
-              child: DropdownButtonFormField<String>(
-                initialValue: _selectedLanguage,
-                decoration: const InputDecoration(
-                  labelText: 'Speech Language',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                ),
-                items: const [
-                  DropdownMenuItem(value: 'hi', child: Text('Hindi (हिन्दी)')),
-                  DropdownMenuItem(value: 'te', child: Text('Telugu (తెలుగు)')),
-                  DropdownMenuItem(value: 'mr', child: Text('Marathi (मराठी)')),
-                  DropdownMenuItem(value: 'ta', child: Text('Tamil (தமிழ்)')),
-                  DropdownMenuItem(value: 'en', child: Text('English (Indian)')),
+        child: isMobile
+            ? Column(
+                children: [
+                  patientDropdown,
+                  const SizedBox(height: 14),
+                  langDropdown,
                 ],
-                onChanged: (lang) => setState(() => _selectedLanguage = lang ?? 'hi'),
+              )
+            : Row(
+                children: [
+                  Expanded(flex: 2, child: patientDropdown),
+                  const SizedBox(width: 16),
+                  Expanded(flex: 1, child: langDropdown),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -727,35 +736,49 @@ class _AshaVoiceNoteViewState extends State<AshaVoiceNoteView> {
   }
 
   Widget _buildActionButtons() {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
+    final analyzeBtn = OutlinedButton.icon(
+      onPressed: _analyzeVoiceSymptoms,
+      icon: const Icon(Icons.psychology, size: 18),
+      label: const Text('Analyze Symptoms (AI)'),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      ),
+    );
+
+    final saveBtn = ElevatedButton.icon(
+      onPressed: _submitting ? null : _saveAndCreateDoctorAppointment,
+      icon: _submitting
+          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+          : const Icon(Icons.send_rounded, size: 18),
+      label: Text(
+        _submitting ? 'Creating Appointment...' : 'Save & Send to Doctor Portal (Create Appointment)',
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF0F766E),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+
+    if (isMobile) {
+      return Column(
+        children: [
+          SizedBox(width: double.infinity, child: analyzeBtn),
+          const SizedBox(height: 12),
+          SizedBox(width: double.infinity, child: saveBtn),
+        ],
+      );
+    }
+
     return Row(
       children: [
-        OutlinedButton.icon(
-          onPressed: _analyzeVoiceSymptoms,
-          icon: const Icon(Icons.psychology, size: 18),
-          label: const Text('Analyze Symptoms (AI)'),
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          ),
-        ),
+        analyzeBtn,
         const SizedBox(width: 16),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: _submitting ? null : _saveAndCreateDoctorAppointment,
-            icon: _submitting
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Icon(Icons.send_rounded, size: 18),
-            label: Text(
-              _submitting ? 'Creating Appointment...' : 'Save & Send to Doctor Portal (Create Appointment)',
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0F766E),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-        ),
+        Expanded(child: saveBtn),
       ],
     );
   }

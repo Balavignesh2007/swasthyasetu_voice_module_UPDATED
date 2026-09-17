@@ -339,12 +339,14 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 24, vertical: isMobile ? 12 : 24),
       child: Container(
-        width: 820,
-        height: 650,
+        width: isMobile ? double.infinity : 820,
+        height: isMobile ? MediaQuery.of(context).size.height * 0.92 : 650,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -362,11 +364,13 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
               ),
               child: TabBar(
                 controller: _tabController,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
                 labelColor: const Color(0xFF0F766E),
                 unselectedLabelColor: Colors.blueGrey.shade600,
                 indicatorColor: const Color(0xFF0F766E),
                 indicatorWeight: 3,
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 tabs: const [
                   Tab(icon: Icon(Icons.history_edu, size: 20), text: 'Last Visit & Clinical Rx'),
                   Tab(icon: Icon(Icons.alt_route, size: 20), text: 'Referral Details ("Referral To")'),
@@ -410,7 +414,7 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: const BoxDecoration(
         color: Color(0xFF0F766E),
         borderRadius: BorderRadius.only(
@@ -421,29 +425,31 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
       child: Row(
         children: [
           CircleAvatar(
-            radius: 24,
+            radius: 22,
             backgroundColor: Colors.white,
             child: Text(
               widget.patient.name.isNotEmpty ? widget.patient.name[0].toUpperCase() : 'P',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Color(0xFF0F766E)),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF0F766E)),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
                   children: [
                     Text(
                       widget.patient.name,
                       style: const TextStyle(
-                        fontSize: 19,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(width: 10),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
@@ -460,7 +466,9 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
                 const SizedBox(height: 4),
                 Text(
                   'ABHA: ${widget.patient.healthId}  •  Village: ${widget.patient.village ?? "Rampur"}  •  Lang: ${widget.patient.preferredLanguage ?? "hi"}',
-                  style: TextStyle(fontSize: 12, color: Colors.teal.shade50),
+                  style: TextStyle(fontSize: 11, color: Colors.teal.shade50),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -477,19 +485,20 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
 
   Widget _buildLastVisitTab(FollowUpLastVisit v) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Doctor & Facility Banner
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: const Color(0xFFF0FDFA),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.teal.shade200),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -500,7 +509,7 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
                   ),
                   child: const Icon(Icons.medical_information, color: Color(0xFF0F766E), size: 24),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,31 +521,32 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
                       const SizedBox(height: 2),
                       Text(
                         '${v.speciality}  •  ${v.facilityName}',
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                        style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                      ),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.teal.shade100,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              v.status.toUpperCase(),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F766E)),
+                            ),
+                          ),
+                          Text(
+                            v.visitDate,
+                            style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.teal.shade100,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        v.status.toUpperCase(),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F766E)),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      v.visitDate,
-                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
-                    ),
-                  ],
                 ),
               ],
             ),
@@ -678,49 +688,69 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
                   ],
                 ),
                 const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('FROM (Origin)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
-                            const SizedBox(height: 4),
-                            Text(r.fromFacility, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                          ],
-                        ),
+                Builder(
+                  builder: (context) {
+                    final isMobile = MediaQuery.of(context).size.width < 768;
+                    final fromBox = Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Icon(Icons.arrow_forward_rounded, color: Color(0xFF0F766E), size: 24),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: urgencyColor.withValues(alpha: 0.5)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('REFERRAL TO (Target)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
-                            const SizedBox(height: 4),
-                            Text(r.toFacility, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: urgencyColor)),
-                          ],
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('FROM (Origin)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
+                          const SizedBox(height: 4),
+                          Text(r.fromFacility, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+
+                    final toBox = Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: urgencyColor.withValues(alpha: 0.5)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('REFERRAL TO (Target)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
+                          const SizedBox(height: 4),
+                          Text(r.toFacility, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: urgencyColor)),
+                        ],
+                      ),
+                    );
+
+                    if (isMobile) {
+                      return Column(
+                        children: [
+                          fromBox,
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 6),
+                            child: Icon(Icons.arrow_downward_rounded, color: Color(0xFF0F766E), size: 22),
+                          ),
+                          toBox,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        Expanded(child: fromBox),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Icon(Icons.arrow_forward_rounded, color: Color(0xFF0F766E), size: 24),
+                        ),
+                        Expanded(child: toBox),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -810,42 +840,49 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
         children: [
           // Due Date & Target Banner
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: const Color(0xFFF0FDF4),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.green.shade300),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.green.shade400),
-                  ),
-                  child: const Icon(Icons.event_note, color: Colors.green, size: 24),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        w.title,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.green.shade400),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Care Pathway: ${w.carePathway}',
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                      child: const Icon(Icons.event_note, color: Colors.green, size: 22),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            w.title,
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Care Pathway: ${w.carePathway}',
+                            style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: Colors.green.shade100,
                     borderRadius: BorderRadius.circular(8),
@@ -953,9 +990,53 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
   }
 
   Widget _buildFooter() {
+    final isMobile = MediaQuery.of(context).size.width < 768;
     final pPhone = widget.patient.phone ?? '+919000000001';
+
+    final callBtn = OutlinedButton.icon(
+      onPressed: () {
+        Clipboard.setData(ClipboardData(text: pPhone));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('📞 Patient Phone copied: $pPhone'),
+            backgroundColor: const Color(0xFF0F766E),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
+      icon: const Icon(Icons.phone, size: 16),
+      label: Text('CALL ($pPhone)'),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: const Color(0xFF0F766E),
+        side: const BorderSide(color: Color(0xFF0F766E)),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+    );
+
+    final escalateBtn = OutlinedButton.icon(
+      onPressed: _escalateEmergency,
+      icon: const Icon(Icons.emergency, color: Colors.red, size: 16),
+      label: const Text('ESCALATE RED FLAG', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.red),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+    );
+
+    final logVisitBtn = ElevatedButton.icon(
+      onPressed: _showRecordVisitDialog,
+      icon: const Icon(Icons.check_circle_outline, size: 18),
+      label: const Text('LOG HOME VISIT & VITALS', style: TextStyle(fontWeight: FontWeight.bold)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF0F766E),
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(top: BorderSide(color: Colors.grey.shade200)),
@@ -964,51 +1045,26 @@ class _PatientFollowUpDashboardDialogState extends State<PatientFollowUpDashboar
           bottomRight: Radius.circular(16),
         ),
       ),
-      child: Row(
-        children: [
-          OutlinedButton.icon(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: pPhone));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('📞 Patient Phone copied: $pPhone'),
-                  backgroundColor: const Color(0xFF0F766E),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-            icon: const Icon(Icons.phone, size: 16),
-            label: Text('CALL ($pPhone)'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF0F766E),
-              side: const BorderSide(color: Color(0xFF0F766E)),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: isMobile
+          ? Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                callBtn,
+                escalateBtn,
+                SizedBox(width: double.infinity, child: logVisitBtn),
+              ],
+            )
+          : Row(
+              children: [
+                callBtn,
+                const SizedBox(width: 10),
+                escalateBtn,
+                const Spacer(),
+                logVisitBtn,
+              ],
             ),
-          ),
-          const SizedBox(width: 10),
-          OutlinedButton.icon(
-            onPressed: _escalateEmergency,
-            icon: const Icon(Icons.emergency, color: Colors.red, size: 16),
-            label: const Text('ESCALATE RED FLAG', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.red),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            ),
-          ),
-          const Spacer(),
-          ElevatedButton.icon(
-            onPressed: _showRecordVisitDialog,
-            icon: const Icon(Icons.check_circle_outline, size: 18),
-            label: const Text('LOG HOME VISIT & VITALS', style: TextStyle(fontWeight: FontWeight.bold)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0F766E),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

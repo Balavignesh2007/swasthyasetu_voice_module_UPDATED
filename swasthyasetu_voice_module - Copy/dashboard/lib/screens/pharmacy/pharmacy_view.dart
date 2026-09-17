@@ -121,34 +121,48 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
       body: Column(
         children: [
           // Banner
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0F766E).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
+          Builder(
+            builder: (context) {
+              final isMobile = MediaQuery.of(context).size.width < 768;
+              if (isMobile) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
                   ),
-                  child: const Icon(Icons.local_pharmacy_rounded, color: Color(0xFF0F766E), size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Text(
-                            'PHC Pharmacy Dispensing Portal',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0F766E).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.local_pharmacy_rounded, color: Color(0xFF0F766E), size: 24),
                           ),
                           const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'PHC Pharmacy Dispensing Portal',
+                              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF0F766E)),
+                            onPressed: _loadData,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
@@ -157,25 +171,77 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
                             ),
                             child: const Text(
                               'FACILITY-SCOPED ACCESS',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F766E)),
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF0F766E)),
                             ),
+                          ),
+                          const Text(
+                            'Shivaji Nagar PHC • Restricted Scope',
+                            style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Shivaji Nagar PHC • Restricted Order Scope (No unrestricted patient medical history)',
-                        style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-                      ),
                     ],
                   ),
+                );
+              }
+
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.refresh_rounded, color: Color(0xFF0F766E)),
-                  onPressed: _loadData,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F766E).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.local_pharmacy_rounded, color: Color(0xFF0F766E), size: 28),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                'PHC Pharmacy Dispensing Portal',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFCCFBF1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Text(
+                                  'FACILITY-SCOPED ACCESS',
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F766E)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Shivaji Nagar PHC • Restricted Order Scope (No unrestricted patient medical history)',
+                            style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.refresh_rounded, color: Color(0xFF0F766E)),
+                      onPressed: _loadData,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
 
           // Tabs
@@ -183,11 +249,13 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
             color: Colors.white,
             child: TabBar(
               controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
               labelColor: const Color(0xFF0F766E),
               unselectedLabelColor: const Color(0xFF64748B),
               indicatorColor: const Color(0xFF0F766E),
               indicatorWeight: 3,
-              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               tabs: [
                 Tab(
                   icon: const Icon(Icons.receipt_long_rounded),
@@ -222,7 +290,7 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
 
   Widget _buildPrescriptionsTab() {
     if (_orders.isEmpty) {
-      return const Center(child: Text('No prescription orders assigned to this facility.'));
+      return const Center(child: Text('No active prescriptions pending for dispensing.'));
     }
 
     return ListView.builder(
@@ -246,29 +314,37 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 6,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isDispensed ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      isDispensed ? 'DISPENSED' : 'PENDING DISPENSING',
-                      style: TextStyle(
-                        color: isDispensed ? Colors.green : Colors.orange.shade800,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isDispensed ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          isDispensed ? 'DISPENSED' : 'PENDING DISPENSING',
+                          style: TextStyle(
+                            color: isDispensed ? Colors.green : Colors.orange.shade800,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Patient: ${o.patientName} (${o.healthId})',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Patient: ${o.patientName} (${o.healthId})',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1E293B)),
-                  ),
-                  const Spacer(),
                   Text(
                     'Prescribed by: ${o.doctorName}',
                     style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
@@ -282,17 +358,28 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.circle, size: 8, color: Color(0xFF0F766E)),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${m["medicine"] ?? "Medicine"}',
-                        style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 6),
+                        child: Icon(Icons.circle, size: 7, color: Color(0xFF0F766E)),
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Dosage: ${m["dosage"] ?? "As directed"} • Duration: ${m["duration"] ?? "3 days"}',
-                        style: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 2,
+                          children: [
+                            Text(
+                              '${m["medicine"] ?? "Medicine"}',
+                              style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                            ),
+                            Text(
+                              'Dosage: ${m["dosage"] ?? "As directed"} • Duration: ${m["duration"] ?? "3 days"}',
+                              style: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -303,8 +390,11 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
                 Text('Instructions: ${o.instructions}', style: const TextStyle(fontStyle: FontStyle.italic, color: Color(0xFF64748B), fontSize: 13)),
               ],
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Wrap(
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   if (!isDispensed)
                     ElevatedButton.icon(
