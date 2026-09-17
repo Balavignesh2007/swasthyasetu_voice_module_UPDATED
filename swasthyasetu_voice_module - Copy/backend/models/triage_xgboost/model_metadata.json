@@ -1,0 +1,14 @@
+{
+  "model_type": "Subword Calibrated Soft-Voting Ensemble (LinearSVC + LogisticRegression + SGD)",
+  "dataset": "smolify/smolified-clinical-symptom-router",
+  "classes": [
+    "EMERGENCY",
+    "HIGH_RISK",
+    "LOW_RISK"
+  ],
+  "accuracy": 0.757,
+  "accuracy_percentage": "75.70%",
+  "macro_f1": 0.7603,
+  "emergency_f1": 0.8121,
+  "version": "4.0.0"
+}

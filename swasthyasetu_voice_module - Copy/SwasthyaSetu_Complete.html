@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwasthyaSetu - Unified Health Access Portal</title>
+  <meta name="description" content="SwasthyaSetu: AI-powered unified national health access portal for Doctors, ASHA Workers, Patients, and Administrators." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #0F766E;
+      --bg-dark: #0F172A;
+      --bg-surface: #F8FAFC;
+      --bg-muted: #F1F5F9;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --border: #E2E8F0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,.15);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition: .18s cubic-bezier(.4,0,.2,1);
+      --font: 'Inter', sans-serif;
+      --font-display: 'Outfit', sans-serif;
+    }
+    html, body { height: 100%; font-family: var(--font); background: var(--bg-dark); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    input, textarea, select { font-family: inherit; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+    .hidden { display: none !important; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-green  { background: #DCFCE7; color: #166534; }
+    .badge-red    { background: #FEE2E2; color: #991B1B; }
+    .badge-blue   { background: #DBEAFE; color: #1E40AF; }
+    .badge-yellow { background: #FEF9C3; color: #854D0E; }
+    .badge-teal   { background: #CCFBF1; color: #115E59; }
+    .badge-purple { background: #EDE9FE; color: #5B21B6; }
+    .badge-orange { background: #FFEDD5; color: #9A3412; }
+    .slide-up { animation: slideUp .3s ease forwards; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; } }
+    @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,.4); } 50% { box-shadow:0 0 0 20px rgba(255,255,255,0); } }
+    @keyframes thinking { 0%,80%,100% { transform:scale(.6);opacity:.4; } 40% { transform:scale(1);opacity:1; } }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+    /* ---- APP ROOT ---- */
+    #app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    .view { display: none; height: 100%; }
+    .view.active { display: flex; flex-direction: column; }
+
+    /* ---- LOGIN ---- */
+    #view-login {
+      align-items: center; justify-content: center; min-height: 100vh;
+      background: var(--bg-dark); overflow: auto; position: relative;
+    }
+    #view-login::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(15,118,110,.25) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 40% at 90% 90%, rgba(67,56,202,.18) 0%, transparent 70%);
+    }
+    .login-card {
+      background: rgba(255,255,255,.98); border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg); padding: 40px 40px 34px;
+      width: 100%; max-width: 520px; position: relative; z-index: 1;
+      margin: 40px 20px;
+    }
+    .login-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+    .login-brand-icon {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(135deg,#0F766E,#0D9488);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; box-shadow: 0 4px 12px rgba(15,118,110,.35);
+    }
+    .login-brand h1 { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text-primary); }
+    .login-brand p { font-size: 12.5px; color: var(--text-secondary); margin-top: 2px; }
+    .tab-bar { display: flex; background: var(--bg-muted); border-radius: var(--radius-md); padding: 4px; gap: 2px; margin-bottom: 24px; }
+    .tab-btn { flex: 1; padding: 9px 4px; border-radius: 7px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); transition: var(--transition); }
+    .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 2px 8px rgba(15,118,110,.3); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn .2s ease; }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+    .form-input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; color: var(--text-primary);
+      background: white; outline: none; transition: var(--transition);
+    }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,.12); }
+    .btn-primary {
+      width: 100%; padding: 13px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg,#0F766E,#0D9488); color: white;
+      font-size: 15px; font-weight: 700; box-shadow: 0 3px 10px rgba(15,118,110,.3);
+      transition: var(--transition); margin-top: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(15,118,110,.4); }
+    .btn-primary.purple { background: linear-gradient(135deg,#4338CA,#6366F1); box-shadow: 0 3px 10px rgba(67,56,202,.3); }
+    .btn-primary.blue   { background: linear-gradient(135deg,#1D4ED8,#3B82F6); box-shadow: 0 3px 10px rgba(29,78,216,.3); }
+    .btn-outline { width:100%; padding:11px; border-radius:var(--radius-sm); margin-top:10px; border:1.5px solid var(--accent); color:var(--accent); font-size:13px; font-weight:600; transition:var(--transition); background:transparent; }
+    .btn-outline:hover { background: rgba(15,118,110,.06); }
+    .login-features { display: grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:18px; border-top:1px solid var(--border); padding-top:16px; }
+    .feature-chip { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); }
+    .demo-hint { font-size:11.5px; color:var(--text-muted); text-align:center; margin-top:14px; }
+    .info-box { background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border:1px solid #BFDBFE; border-radius:var(--radius-md); padding:12px 14px; font-size:12.5px; color:#1E40AF; display:flex; gap:8px; margin:10px 0; }
+
+    /* ---- MAIN APP ---- */
+    #view-app { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .topbar { height:64px; min-height:64px; display:flex; align-items:center; padding:0 24px; gap:14px; background:white; border-bottom:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; z-index:50; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; }
+    .topbar-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .topbar-title { font-family:var(--font-display); font-size:18px; font-weight:800; color:var(--text-primary); }
+    .role-chip { padding:3px 10px; border-radius:5px; font-size:10px; font-weight:700; letter-spacing:.5px; }
+    .topbar-sub { font-size:10.5px; color:var(--text-muted); margin-top:1px; }
+    .portal-switcher { display:flex; gap:6px; margin-left:auto; }
+    .portal-btn { display:flex; align-items:center; gap:5px; padding:6px 12px; border-radius:7px; font-size:12px; font-weight:600; transition:var(--transition); border:1.5px solid var(--border); color:var(--text-secondary); }
+    .portal-btn:hover { border-color:var(--accent); color:var(--accent); background:rgba(15,118,110,.05); }
+    .portal-btn.active { border-color:var(--accent); color:white; background:var(--accent); }
+    .user-chip { display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:20px; background:var(--bg-muted); border:1px solid var(--border); }
+    .avatar { border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; flex-shrink:0; }
+    .logout-btn { padding:8px; border-radius:7px; color:var(--text-muted); transition:var(--transition); font-size:18px; }
+    .logout-btn:hover { background:var(--bg-muted); color:var(--text-primary); }
+
+    .app-body { flex:1; display:flex; overflow:hidden; }
+    .sidebar { width:82px; min-width:82px; background:white; border-right:1px solid var(--border); display:flex; flex-direction:column; align-items:center; padding:12px 0; gap:3px; overflow-y:auto; }
+    .nav-item { width:70px; padding:10px 4px; border-radius:var(--radius-sm); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:9.5px; font-weight:600; color:var(--text-secondary); transition:var(--transition); text-align:center; line-height:1.3; }
+    .nav-item:hover { background:var(--bg-muted); color:var(--text-primary); }
+    .nav-item.active { color:var(--accent); background:rgba(15,118,110,.08); }
+    .nav-icon { font-size:20px; }
+    .content-area { flex:1; overflow-y:auto; background:var(--bg-surface); padding:24px; }
+
+    /* ---- CONTENT COMPONENTS ---- */
+    .page-header { margin-bottom:22px; }
+    .page-header h2 { font-family:var(--font-display); font-size:22px; font-weight:800; color:var(--text-primary); }
+    .page-header p { font-size:13px; color:var(--text-secondary); margin-top:3px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    .stat-card { background:white; border-radius:var(--radius-lg); padding:18px 20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); transition:var(--transition); }
+    .stat-card:hover { box-shadow:var(--shadow-md); transform:translateY(-1px); }
+    .stat-label { font-size:11.5px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.4px; }
+    .stat-value { font-family:var(--font-display); font-size:30px; font-weight:800; color:var(--text-primary); margin:4px 0; line-height:1; }
+    .stat-change { font-size:12px; color:#16A34A; font-weight:600; }
+    .stat-change.down { color:#DC2626; }
+
+    .data-table-wrap { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow-sm); }
+    .data-table-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .dtitle { font-size:15px; font-weight:700; }
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.4px; background:var(--bg-surface); border-bottom:1px solid var(--border); }
+    .data-table td { padding:12px 14px; font-size:13px; color:var(--text-primary); border-bottom:1px solid #F1F5F9; }
+    .data-table tr:hover td { background:var(--bg-surface); }
+    .data-table tr:last-child td { border-bottom:none; }
+
+    .card { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-sm); }
+    .card-title { font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+
+    .alert-item { display:flex; gap:12px; padding:13px 15px; border-radius:var(--radius-md); border:1px solid; margin-bottom:10px; transition:var(--transition); }
+    .alert-item:hover { transform:translateX(2px); }
+    .alert-item.critical { background:#FFF1F2; border-color:#FECDD3; }
+    .alert-item.high     { background:#FFFBEB; border-color:#FDE68A; }
+    .alert-item.medium   { background:#EFF6FF; border-color:#BFDBFE; }
+
+    .patient-card { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); padding:14px 16px; transition:var(--transition); box-shadow:var(--shadow-sm); }
+    .patient-card:hover { box-shadow:var(--shadow-md); border-color:var(--accent); }
+
+    .voice-box { background:linear-gradient(135deg,#0F766E 0%,#0D9488 50%,#1D4ED8 100%); border-radius:var(--radius-xl); padding:36px; color:white; text-align:center; position:relative; overflow:hidden; }
+    .voice-box::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.1) 0%,transparent 60%); pointer-events:none; }
+    .mic-btn { width:88px; height:88px; border-radius:50%; background:rgba(255,255,255,.2); border:3px solid rgba(255,255,255,.5); font-size:38px; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; transition:var(--transition); cursor:pointer; backdrop-filter:blur(10px); }
+    .mic-btn:hover, .mic-btn.recording { background:rgba(255,255,255,.35); transform:scale(1.05); }
+    .pulse-ring { animation: pulse 1.5s ease-in-out infinite; }
+
+    .triage-result { background:white; border-radius:var(--radius-lg); padding:20px; border:1px solid var(--border); margin-top:18px; }
+    .triage-result.emergency { border-color:#FECDD3; background:#FFF1F2; }
+    .triage-result.high      { border-color:#FDE68A; background:#FFFBEB; }
+    .triage-result.medium    { border-color:#BFDBFE; background:#EFF6FF; }
+    .triage-result.low       { border-color:#BBF7D0; background:#F0FDF4; }
+
+    .bar-chart { display:flex; flex-direction:column; gap:10px; }
+    .bar-row { display:flex; align-items:center; gap:10px; }
+    .bar-label { font-size:12px; color:var(--text-secondary); width:110px; flex-shrink:0; }
+    .bar-track { flex:1; background:var(--bg-muted); border-radius:6px; height:9px; }
+    .bar-fill  { height:9px; border-radius:6px; transition:width .8s cubic-bezier(.4,0,.2,1); }
+    .bar-val   { font-size:12px; font-weight:700; width:40px; text-align:right; }
+
+    .consult-card { display:flex; gap:12px; padding:14px 16px; background:white; border-radius:var(--radius-lg); border:1px solid var(--border); margin-bottom:11px; box-shadow:var(--shadow-sm); transition:var(--transition); }
+    .consult-card:hover { box-shadow:var(--shadow-md); }
+    .consult-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:white; flex-shrink:0; }
+
+    .btn-sm { padding:6px 13px; border-radius:6px; font-size:12px; font-weight:600; transition:var(--transition); }
+    .btn-sm.green  { background:#DCFCE7; color:#166534; }
+    .btn-sm.green:hover { background:#16A34A; color:white; }
+    .btn-sm.blue   { background:#DBEAFE; color:#1E40AF; }
+    .btn-sm.blue:hover  { background:#1D4ED8; color:white; }
+    .btn-sm.red    { background:#FEE2E2; color:#991B1B; }
+
+    .analytics-chart { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); padding:18px; box-shadow:var(--shadow-sm); }
+    .mini-sparkline { display:flex; align-items:flex-end; gap:3px; height:44px; margin-top:10px; }
+    .spark-bar { border-radius:2px 2px 0 0; min-width:8px; transition:height .8s cubic-bezier(.4,0,.2,1); }
+
+    .search-bar { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid var(--border); border-radius:8px; padding:8px 13px; }
+    .search-bar input { border:none; outline:none; font-size:13px; color:var(--text-primary); flex:1; background:transparent; }
+    .action-btn { padding:8px 18px; border-radius:7px; font-size:13px; font-weight:600; background:var(--accent); color:white; transition:var(--transition); }
+    .action-btn:hover { opacity:.9; transform:translateY(-1px); }
+    .referral-card { background:white; border-radius:var(--radius-lg); border:1px solid var(--border); padding:16px 18px; margin-bottom:12px; box-shadow:var(--shadow-sm); }
+
+    /* ---- CHATBOT ---- */
+    #chatbot-fab { position:fixed; right:28px; bottom:28px; z-index:9000; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#0F766E,#0D9488); box-shadow:0 6px 24px rgba(15,118,110,.45); display:flex; align-items:center; justify-content:center; font-size:26px; transition:var(--transition); border:3px solid rgba(255,255,255,.3); cursor:pointer; }
+    #chatbot-fab:hover { transform:scale(1.08); box-shadow:0 8px 30px rgba(15,118,110,.55); }
+    #chatbot-fab .fab-badge { position:absolute; top:-2px; right:-2px; width:18px; height:18px; border-radius:50%; background:#DC2626; border:2px solid white; font-size:10px; font-weight:700; color:white; display:flex; align-items:center; justify-content:center; }
+    #chatbot-window { position:fixed; right:28px; bottom:100px; z-index:8999; width:370px; max-height:570px; background:white; border-radius:var(--radius-xl); box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 0 1px var(--border); display:flex; flex-direction:column; overflow:hidden; transform:scale(.85) translateY(20px); opacity:0; pointer-events:none; transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s ease; }
+    #chatbot-window.open { transform:scale(1) translateY(0); opacity:1; pointer-events:all; }
+    .chat-header { background:linear-gradient(135deg,#0F766E,#0D9488); padding:14px 16px; display:flex; align-items:center; gap:10px; color:white; }
+    .chat-avatar { width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid rgba(255,255,255,.4); flex-shrink:0; }
+    .chat-header-info h4 { font-size:14px; font-weight:700; }
+    .chat-online { display:flex; align-items:center; gap:5px; font-size:11px; margin-top:2px; opacity:.85; }
+    .chat-online-dot { width:6px; height:6px; border-radius:50%; background:#4ADE80; animation:blink 2s ease-in-out infinite; }
+    .chat-close { margin-left:auto; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; transition:var(--transition); }
+    .chat-close:hover { background:rgba(255,255,255,.35); }
+    .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:#F8FAFC; }
+    .chat-msg { display:flex; gap:8px; max-width:88%; }
+    .chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+    .msg-avatar { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+    .msg-bubble { padding:9px 12px; border-radius:14px; font-size:13px; line-height:1.5; }
+    .chat-msg.bot .msg-bubble  { background:white; color:var(--text-primary); border:1px solid var(--border); border-bottom-left-radius:4px; box-shadow:var(--shadow-sm); }
+    .chat-msg.user .msg-bubble { background:linear-gradient(135deg,#0F766E,#0D9488); color:white; border-bottom-right-radius:4px; }
+    .chat-msg-time { font-size:10px; color:var(--text-muted); margin-top:2px; }
+    .faq-chips { display:flex; flex-wrap:wrap; gap:6px; padding:0 0 6px 34px; }
+    .faq-chip { padding:5px 10px; border-radius:20px; border:1.5px solid var(--border); font-size:12px; font-weight:600; color:var(--accent); cursor:pointer; background:white; transition:var(--transition); }
+    .faq-chip:hover { background:var(--accent); color:white; border-color:var(--accent); }
+    .chat-thinking { display:flex; gap:4px; align-items:center; padding:10px 12px; background:white; border-radius:14px; border:1px solid var(--border); border-bottom-left-radius:4px; }
+    .think-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); animation:thinking .9s ease-in-out infinite; }
+    .think-dot:nth-child(2) { animation-delay:.15s; }
+    .think-dot:nth-child(3) { animation-delay:.3s; }
+    .emergency-bar { background:#FEF2F2; border-top:1px solid #FECDD3; padding:7px 14px; font-size:11.5px; color:#991B1B; display:flex; align-items:center; gap:6px; }
+    .chat-input-bar { border-top:1px solid var(--border); padding:10px 12px; display:flex; gap:8px; background:white; }
+    #chat-input { flex:1; border:1.5px solid var(--border); border-radius:22px; padding:9px 14px; font-size:13px; outline:none; transition:var(--transition); resize:none; line-height:1.4; max-height:80px; }
+    #chat-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(15,118,110,.1); }
+    .chat-send-btn { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#0F766E,#0D9488); display:flex; align-items:center; justify-content:center; font-size:15px; transition:var(--transition); flex-shrink:0; }
+    .chat-send-btn:hover { transform:scale(1.1); box-shadow:0 4px 12px rgba(15,118,110,.35); }
+
+    @media (max-width: 768px) {
+      .grid-4, .grid-3, .grid-2, .form-row { grid-template-columns:1fr; }
+      .portal-switcher { gap:3px; }
+      .portal-btn { padding:5px 7px; font-size:10px; }
+      .content-area { padding:14px; }
+      #chatbot-window { right:10px; bottom:90px; width:calc(100vw - 20px); }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+<!-- =========================================
+     LOGIN SCREEN
+========================================= -->
+<div id="view-login" class="view active">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-brand-icon">&#x1F3E5;</div>
+      <div>
+        <h1>SwasthyaSetu</h1>
+        <p>Unified National Health Access Portal</p>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchLoginTab('doctor',this)">&#x1FA7A; Doctor</button>
+      <button class="tab-btn" onclick="switchLoginTab('asha',this)">&#x1F469;&#x200D;&#x2695;&#xFE0F; ASHA</button>
+      <button class="tab-btn" onclick="switchLoginTab('patient',this)">&#x1F9D1; Patient</button>
+      <button class="tab-btn" onclick="switchLoginTab('admin',this)">&#x1F6E1;&#xFE0F; Admin</button>
+    </div>
+    <div class="tab-panel active" id="lpanel-doctor">
+      <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="doc-user" value="dr.sharma" /></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="doc-pass" value="doctor123" type="password" /></div>
+      <button class="btn-primary" onclick="doLogin('doctor')">&#x1F510; Login as Doctor</button>
+      <button class="btn-outline" onclick="doLogin('doctor')">&#x26A1; One-Click Demo: Dr. Anjali Sharma</button>
+    </div>
+    <div class="tab-panel" id="lpanel-asha">
+      <div class="form-group"><label class="form-label">Registered Phone</label><input class="form-input" id="asha-phone" value="9876543210" /></div>
+      <div class="info-box">&#x2139;&#xFE0F; ASHA workers login with their registered mobile. OTP-based secure access.</div>
+      <button class="btn-primary" onclick="doLogin('asha')">&#x1F510; Login as ASHA Worker</button>
+      <button class="btn-outline" onclick="doLogin('asha')">&#x26A1; One-Click Demo: Lakshmi Devi</button>
+    </div>
+    <div class="tab-panel" id="lpanel-patient">
+      <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="pat-phone" value="+919000000001" /></div>
+      <div class="form-group"><label class="form-label">ABHA Health ID</label><input class="form-input" id="pat-hid" value="HID10001" /></div>
+      <button class="btn-primary blue" onclick="doLogin('patient')">&#x1F510; Access Patient Portal</button>
+      <button class="btn-outline" style="border-color:#1D4ED8;color:#1D4ED8" onclick="doLogin('patient')">&#x26A1; One-Click Demo: Patient (HID10001)</button>
+    </div>
+    <div class="tab-panel" id="lpanel-admin">
+      <div class="form-group"><label class="form-label">Admin Username</label><input class="form-input" id="adm-user" value="admin" /></div>
+      <div class="form-group"><label class="form-label">Admin Password</label><input class="form-input" id="adm-pass" value="admin12345" type="password" /></div>
+      <button class="btn-primary purple" onclick="doLogin('admin')">&#x1F510; Login as Administrator</button>
+      <button class="btn-outline" style="border-color:#4338CA;color:#4338CA" onclick="doLogin('admin')">&#x26A1; One-Click Demo: System Admin</button>
+    </div>
+    <div class="login-features">
+      <div class="feature-chip"><span>&#x1F3A4;</span> AI Voice Triage</div>
+      <div class="feature-chip"><span>&#x1F4F9;</span> Teleconsultation</div>
+      <div class="feature-chip"><span>&#x1F916;</span> AI Assistant</div>
+      <div class="feature-chip"><span>&#x1F310;</span> Multi-Language NLP</div>
+      <div class="feature-chip"><span>&#x1F3E5;</span> Hospital Referrals</div>
+      <div class="feature-chip"><span>&#x1F4CA;</span> Live Analytics</div>
+      <div class="feature-chip"><span>&#x1F6A8;</span> Emergency Alerts</div>
+      <div class="feature-chip"><span>&#x1F512;</span> ABHA Integration</div>
+    </div>
+    <div class="demo-hint">SwasthyaSetu v2.1 &bull; AI-powered Rural Healthcare &bull; All data is for demo</div>
+  </div>
+</div>
+
+<!-- =========================================
+     MAIN APP
+========================================= -->
+<div id="view-app" class="view">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon" id="tb-icon">&#x1F3E5;</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="topbar-title">SwasthyaSetu</span>
+          <span class="role-chip" id="tb-role-chip">DOCTOR</span>
+        </div>
+        <div class="topbar-sub">Unified Health Access Portal &bull; Single Host Mode</div>
+      </div>
+    </div>
+    <div class="portal-switcher">
+      <button class="portal-btn" onclick="switchPortal('doctor')" id="pbtn-doctor">&#x1FA7A; Doctor</button>
+      <button class="portal-btn" onclick="switchPortal('asha')" id="pbtn-asha">&#x1F469;&#x200D;&#x2695; ASHA</button>
+      <button class="portal-btn" onclick="switchPortal('patient')" id="pbtn-patient">&#x1F9D1; Patient</button>
+      <button class="portal-btn" onclick="switchPortal('admin')" id="pbtn-admin">&#x1F6E1; Admin</button>
+    </div>
+    <div class="user-chip">
+      <div class="avatar" id="tb-avatar" style="width:28px;height:28px;font-size:12px;background:#0F766E">DS</div>
+      <span id="tb-name" style="font-size:13px;font-weight:600">Dr. Sharma</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()" title="Logout">&#x1F6AA;</button>
+  </div>
+  <div class="app-body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content-area" id="content-area"></div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<!-- =========================================
+     GLOBAL FLOATING CHATBOT
+========================================= -->
+<button id="chatbot-fab" onclick="toggleChatbot()" title="AI Assistant" style="display:none">
+  &#x1F916;
+  <div class="fab-badge" id="fab-badge">1</div>
+</button>
+<div id="chatbot-window">
+  <div class="chat-header">
+    <div class="chat-avatar">&#x1F916;</div>
+    <div class="chat-header-info">
+      <h4>AI Assistant</h4>
+      <div class="chat-online"><div class="chat-online-dot"></div>SwasthyaSetu AI &bull; Always Available</div>
+    </div>
+    <div class="chat-close" onclick="toggleChatbot()">&#x2715;</div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="emergency-bar">&#x1F6A8; Emergency? Call <strong style="margin-left:4px">112 / 1800-180-1104</strong></div>
+  <div class="chat-input-bar">
+    <textarea id="chat-input" rows="1" placeholder="Ask about health, appointments, medicines..." onkeydown="chatKeydown(event)"></textarea>
+    <button class="chat-send-btn" onclick="sendChat()">&#x27A4;</button>
+  </div>
+</div>
+
+<script>
+// =====================================================
+//  STATE
+// =====================================================
+var state = { role:'doctor', name:'Dr. Anjali Sharma', navIndex:0, chatOpen:false, chatMessages:[], chatThinking:false, voiceRecording:false, voiceResult:null };
+var colorMap = { doctor:'#0F766E', asha:'#0D9488', patient:'#1D4ED8', admin:'#4338CA' };
+
+// =====================================================
+//  MOCK DATA
+// =====================================================
+var MOCK = {
+  doctor: {
+    appointments: [
+      {id:'APT001',patient:'Rahul Sharma',age:45,time:'09:00',type:'OPD',symptoms:'Chest pain, shortness of breath',triage:'High',status:'Confirmed'},
+      {id:'APT002',patient:'Priya Patel',age:28,time:'09:30',type:'OPD',symptoms:'Fever, cough, body ache',triage:'Medium',status:'Confirmed'},
+      {id:'APT003',patient:'Amit Kumar',age:62,time:'10:00',type:'OPD',symptoms:'Diabetes follow-up, foot pain',triage:'Low',status:'Confirmed'},
+      {id:'APT004',patient:'Sunita Devi',age:34,time:'10:30',type:'TELE',symptoms:'Skin rash, itching',triage:'Low',status:'Pending'},
+      {id:'APT005',patient:'Mohan Singh',age:71,time:'11:00',type:'OPD',symptoms:'Dizziness, high BP',triage:'High',status:'Confirmed'},
+      {id:'APT006',patient:'Kavya Reddy',age:22,time:'11:30',type:'TELE',symptoms:'Anxiety, sleep issues',triage:'Medium',status:'Confirmed'}
+    ],
+    teleconsults: [
+      {patient:'Sunita Devi',age:34,reason:'Skin allergy — photos shared',time:'10:30 AM',status:'Waiting',id:'TC001'},
+      {patient:'Kavya Reddy',age:22,reason:'Mental health consult',time:'11:30 AM',status:'Scheduled',id:'TC002'},
+      {patient:'Ravi Agarwal',age:55,reason:'Post-surgery follow-up',time:'02:00 PM',status:'Scheduled',id:'TC003'},
+      {patient:'Meena Joseph',age:41,reason:'Hypertension medication review',time:'03:30 PM',status:'Scheduled',id:'TC004'}
+    ],
+    alerts: [
+      {level:'critical',title:'EMERGENCY: Cardiac Alert — Rahul Sharma',msg:'HR 142 bpm, SpO2 86%. Immediate intervention required.',time:'2 min ago'},
+      {level:'high',title:'Critical Triage — Mohan Singh (71M)',msg:'BP 180/110, severe dizziness. ICU admission recommended.',time:'8 min ago'},
+      {level:'high',title:'Medication Non-compliance — Priya Patel',msg:'Blood glucose 320 mg/dL. Missed 3 days of insulin.',time:'15 min ago'},
+      {level:'medium',title:'Lab Results Ready — Amit Kumar',msg:'HbA1c 8.2%, eGFR 58. Review before appointment.',time:'1 hr ago'}
+    ],
+    stats:{
+      diagnoses:[{l:'Hypertension',p:38},{l:'Diabetes',p:27},{l:'Respiratory',p:19},{l:'Cardiac',p:11},{l:'Other',p:5}],
+      monthly:[12,18,24,16,22,28,30,26,32,20,24,22]
+    }
+  },
+  asha: {
+    patients: [
+      {name:'Sunita Kumari',age:32,village:'Rampur',condition:'Pregnant - 28 wks',risk:'High',last:'2 days ago'},
+      {name:'Meena Devi',age:45,village:'Keshavpur',condition:'Hypertension',risk:'Medium',last:'5 days ago'},
+      {name:'Ritu Singh',age:6,village:'Rampur',condition:'Malnutrition (SAM)',risk:'High',last:'1 day ago'},
+      {name:'Lalita Sharma',age:67,village:'Bijapur',condition:'TB (DOTS therapy)',risk:'Medium',last:'3 days ago'},
+      {name:'Champa Bai',age:28,village:'Keshavpur',condition:'Post-delivery care',risk:'Low',last:'1 week ago'},
+      {name:'Sarla Devi',age:54,village:'Bijapur',condition:'Diabetes follow-up',risk:'Medium',last:'4 days ago'}
+    ],
+    alerts: [
+      {level:'critical',title:'ASHA Visit Overdue — Sunita Kumari',msg:'High-risk pregnancy. No visit in 3 days. Immediate follow-up required.',time:'30 min ago'},
+      {level:'critical',title:'Child Nutrition Alert — Ritu Singh (6Y)',msg:'Weight loss detected. SAM protocol. Refer to NRC immediately.',time:'1 hr ago'},
+      {level:'high',title:'TB DOTS Missed — Lalita Sharma',msg:'2 consecutive doses missed. Drug resistance risk.',time:'2 hrs ago'},
+      {level:'medium',title:'Vaccination Due — Rampur Village (4 children)',msg:'DPT booster overdue for 4 children. Schedule immunization camp.',time:'Today'}
+    ],
+    languages:['Hindi','English','Tamil','Bengali','Marathi','Telugu','Kannada'],
+    transcripts:[
+      {patient:'Sunita Kumari',lang:'Hindi',text:'Bukhar hai, pet mein dard hai aur sir ghoom raha hai.',translation:'Fever, abdominal pain and dizziness.',triage:'High',time:'10 min ago'},
+      {patient:'Meena Devi',lang:'Hindi',text:'Sir dard hai, BP high hai.',translation:'Headache, high BP.',triage:'Medium',time:'45 min ago'},
+      {patient:'Champa Bai',lang:'English',text:'Baby not feeding properly for 2 days.',translation:'-',triage:'High',time:'2 hrs ago'}
+    ]
+  },
+  patient: {
+    appointments: [
+      {id:'APT-2024-001',doctor:'Dr. Anjali Sharma',dept:'General Medicine',date:'Tomorrow',time:'09:00 AM',status:'Confirmed',type:'OPD'},
+      {id:'APT-2024-002',doctor:'Dr. Vikram Nair',dept:'Cardiology',date:'12 Sep 2026',time:'11:30 AM',status:'Confirmed',type:'OPD'},
+      {id:'APT-2024-003',doctor:'Dr. Priya Mehta',dept:'Dermatology',date:'18 Sep 2026',time:'03:00 PM',status:'Pending',type:'Teleconsult'}
+    ],
+    referrals: [
+      {id:'REF-001',hospital:'AIIMS Delhi',dept:'Cardiology',date:'15 Sep 2026',status:'Scheduled',steps:3},
+      {id:'REF-002',hospital:'Safdarjung Hospital',dept:'Orthopaedics',date:'22 Sep 2026',status:'Referred',steps:2}
+    ]
+  },
+  admin: {
+    kpis:{totalPatients:14872,activeASHA:342,doctorsOnline:28,consultationsToday:1247},
+    doctors:[
+      {name:'Dr. Anjali Sharma',dept:'General Medicine',patients:22,rating:4.8,status:'Active'},
+      {name:'Dr. Vikram Nair',dept:'Cardiology',patients:18,rating:4.9,status:'Active'},
+      {name:'Dr. Priya Mehta',dept:'Dermatology',patients:14,rating:4.7,status:'On Leave'},
+      {name:'Dr. Rajiv Gupta',dept:'Orthopaedics',patients:20,rating:4.6,status:'Active'},
+      {name:'Dr. Sunita Rao',dept:'Paediatrics',patients:31,rating:4.9,status:'Active'},
+      {name:'Dr. Mohit Khanna',dept:'Psychiatry',patients:9,rating:4.5,status:'Active'}
+    ],
+    asha:[
+      {name:'Lakshmi Devi',district:'Varanasi',villages:12,patients:48,perf:'Excellent'},
+      {name:'Kamla Bai',district:'Lucknow',villages:9,patients:35,perf:'Good'},
+      {name:'Reena Kumari',district:'Agra',villages:11,patients:42,perf:'Good'},
+      {name:'Savitri Devi',district:'Kanpur',villages:8,patients:29,perf:'Average'}
+    ],
+    analytics:{
+      monthly:[890,1120,1340,1180,1560,1780,1920,1640,1870,2100,1980,2240],
+      triage:{critical:8,high:22,medium:41,low:29},
+      conditions:[{n:'Hypertension',c:3421},{n:'Diabetes',c:2876},{n:'Respiratory',c:2134},{n:'Maternal Health',c:1892},{n:'Malnutrition',c:1244}]
+    }
+  }
+};
+
+// =====================================================
+//  CHATBOT RESPONSES
+// =====================================================
+var chatResponses = [
+  {keys:['fever','temperature','bukhar'], resp:'**Fever guidance:**\nStay hydrated, rest, and take paracetamol if above 38.5 C. If fever persists over 3 days or exceeds 40 C, seek medical care.'},
+  {keys:['chest pain','chest','cardiac'],  resp:'**URGENT: Chest pain may be a medical emergency.** Call 112 immediately or go to nearest ER. Do not drive yourself.'},
+  {keys:['appointment','book','schedule'], resp:'**Booking appointments:**\nGo to your portal then select My Consultations or Book Appointment. Choose OPD or Teleconsultation.'},
+  {keys:['medicine','medication','drug'],  resp:'**Medication queries:** Always consult your doctor before changing dosages. For refills, use the Prescription section or ask your ASHA worker.'},
+  {keys:['abha','health id'],              resp:'**ABHA (Ayushman Bharat Health Account):**\nYour ABHA ID links all health records nationally. Create one at abdm.gov.in or ask your ASHA worker.'},
+  {keys:['blood pressure','bp','hypertension'], resp:'**Blood Pressure tips:**\nNormal is below 120/80. Reduce salt, exercise 30 min daily, avoid stress. Take BP medication at the same time every day.'},
+  {keys:['diabetes','sugar','insulin'],    resp:'**Diabetes management:**\nMonitor blood glucose daily. Eat low-GI foods, exercise regularly, never skip medication. Target fasting: 80-130 mg/dL.'},
+  {keys:['emergency','112','urgent'],      resp:'**Emergency Services:**\nCall 112 (National Emergency)\nCall 1800-180-1104 (Health Helpline)\nNearest PHC can be located via your ASHA worker.'},
+  {keys:['teleconsult','video','online'],  resp:'**Teleconsultation:** Available for non-emergency cases. Schedule via your portal My Consultations then Teleconsult. Ensure good internet connection.'},
+  {keys:['pregnancy','pregnant','antenatal'], resp:'**Antenatal Care:**\nRegister with your ASHA worker immediately. Minimum 4 ANC visits required. Free nutrition supplements at PHC. Register for Janani Suraksha Yojana.'},
+  {keys:['vaccine','vaccination','immunization'], resp:'**Vaccination schedule:**\nFollow the National Immunization Schedule. Your ASHA worker tracks due dates. All vaccines are free at government facilities.'},
+  {keys:['hello','hi','hey','namaste'],    resp:'**Namaste! Welcome to SwasthyaSetu AI Assistant.**\n\nI can help with:\n- Health advice and symptom info\n- Appointment booking guidance\n- Medicine queries\n- Emergency helplines\n- ABHA health ID\n\nHow can I help you today?'}
+];
+var fallbacks = [
+  'For accurate medical advice, please book an appointment with a doctor through the portal. I can guide you there!',
+  'That is a good question. For detailed guidance specific to your condition, consult a qualified healthcare professional.',
+  'Please verify with a doctor. You can use the Voice Checker for AI-powered symptom assessment in your portal.',
+  'Thank you for reaching out. For detailed medical guidance, please consult your doctor or book an appointment.'
+];
+
+// =====================================================
+//  LOGIN
+// =====================================================
+function switchLoginTab(role, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('lpanel-'+role).classList.add('active');
+}
+
+function doLogin(role) {
+  var names = {doctor:'Dr. Anjali Sharma', asha:'Lakshmi Devi', patient:'Rahul Patient', admin:'System Admin'};
+  state.role = role; state.name = names[role]; state.navIndex = 0;
+  document.getElementById('view-login').classList.remove('active');
+  document.getElementById('view-app').classList.add('active');
+  updateTopbar(); renderSidebar(); renderContent(); initChatbot();
+  document.getElementById('chatbot-fab').style.display = 'flex';
+}
+
+function doLogout() {
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-login').classList.add('active');
+  document.getElementById('chatbot-fab').style.display = 'none';
+  document.getElementById('chatbot-window').classList.remove('open');
+  state.chatOpen = false; state.chatMessages = [];
+}
+
+// =====================================================
+//  TOPBAR
+// =====================================================
+function updateTopbar() {
+  var r = state.role;
+  var emo = {doctor:'&#x1FA7A;', asha:'&#x1F469;&#x200D;&#x2695;', patient:'&#x1F9D1;', admin:'&#x1F6E1;'};
+  var initials = state.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+  document.getElementById('tb-icon').innerHTML = emo[r];
+  var chip = document.getElementById('tb-role-chip');
+  chip.textContent = r.toUpperCase();
+  chip.style.cssText = 'background:'+colorMap[r]+'22;color:'+colorMap[r]+';padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:.5px;';
+  document.getElementById('tb-avatar').textContent = initials;
+  document.getElementById('tb-avatar').style.background = colorMap[r];
+  document.getElementById('tb-name').textContent = state.name;
+  document.querySelectorAll('.portal-btn').forEach(function(b){b.classList.remove('active');b.style.background='';b.style.color='';b.style.borderColor='';});
+  var ab = document.getElementById('pbtn-'+r);
+  if(ab){ab.classList.add('active');ab.style.background=colorMap[r];ab.style.borderColor=colorMap[r];ab.style.color='white';}
+  document.documentElement.style.setProperty('--accent', colorMap[r]);
+}
+
+function switchPortal(role) {
+  var names = {doctor:'Dr. Anjali Sharma',asha:'Lakshmi Devi',patient:'Rahul Patient',admin:'System Admin'};
+  state.role = role; state.name = names[role]; state.navIndex = 0;
+  updateTopbar(); renderSidebar(); renderContent();
+}
+
+// =====================================================
+//  SIDEBAR
+// =====================================================
+var navCfg = {
+  doctor:  [{i:'&#x1F4CB;',l:'OPD Appts'},{i:'&#x1F4F9;',l:'Teleconsult'},{i:'&#x1F6A8;',l:'Alerts'},{i:'&#x1F4CA;',l:'Stats'}],
+  asha:    [{i:'&#x1F3A4;',l:'Voice'},{i:'&#x1F465;',l:'Patients'},{i:'&#x1F514;',l:'Alerts'}],
+  patient: [{i:'&#x1F3E5;',l:'Voice Check'},{i:'&#x1F4C5;',l:'Consults'},{i:'&#x1F3E8;',l:'Referrals'}],
+  admin:   [{i:'&#x1F4C8;',l:'Analytics'},{i:'&#x1F9D1;&#x200D;&#x2695;',l:'Doctors'},{i:'&#x1F3C5;',l:'ASHA Workers'}]
+};
+
+function renderSidebar() {
+  var nav = navCfg[state.role];
+  document.getElementById('sidebar').innerHTML = nav.map(function(n,i){
+    return '<button class="nav-item '+(i===state.navIndex?'active':'')+'" onclick="selectNav('+i+')"><span class="nav-icon">'+n.i+'</span>'+n.l+'</button>';
+  }).join('');
+}
+
+function selectNav(i) { state.navIndex=i; renderSidebar(); renderContent(); }
+
+// =====================================================
+//  CONTENT ROUTING
+// =====================================================
+function renderContent() {
+  var ca = document.getElementById('content-area');
+  ca.innerHTML = ''; ca.scrollTop = 0;
+  var r = state.role, i = state.navIndex;
+  if(r==='doctor'){
+    if(i===0) ca.innerHTML = renderDoctorAppts();
+    else if(i===1) ca.innerHTML = renderDoctorTeleconsult();
+    else if(i===2) ca.innerHTML = renderDoctorAlerts();
+    else ca.innerHTML = renderDoctorStats();
+  } else if(r==='asha'){
+    if(i===0) ca.innerHTML = renderAshaVoice();
+    else if(i===1) ca.innerHTML = renderAshaPatients();
+    else ca.innerHTML = renderAshaAlerts();
+  } else if(r==='patient'){
+    if(i===0) ca.innerHTML = renderPatientVoice();
+    else if(i===1) ca.innerHTML = renderPatientAppts();
+    else ca.innerHTML = renderPatientReferrals();
+  } else {
+    if(i===0) ca.innerHTML = renderAdminAnalytics();
+    else if(i===1) ca.innerHTML = renderAdminDoctors();
+    else ca.innerHTML = renderAdminAsha();
+  }
+  setTimeout(function(){
+    document.querySelectorAll('.bar-fill[data-pct]').forEach(function(b){ b.style.width=b.dataset.pct+'%'; b.style.background=b.dataset.color||'#0F766E'; });
+    document.querySelectorAll('.spark-bar[data-h]').forEach(function(b){ b.style.height=b.dataset.h+'px'; b.style.background=b.dataset.c||'#0F766E'; b.style.opacity=b.dataset.o||'1'; });
+  },60);
+}
+
+// =====================================================
+//  HELPERS
+// =====================================================
+function sCard(label, val, icon, change, danger) {
+  return '<div class="stat-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="stat-label">'+label+'</div><div class="stat-value"'+(danger?' style="color:#DC2626"':'')+'>'+val+'</div><div class="stat-change'+(danger?' down':'')+'">'+change+'</div></div><div style="font-size:28px">'+icon+'</div></div></div>';
+}
+
+function tBadge(level) {
+  var map={High:'badge-red',Medium:'badge-yellow',Low:'badge-green',Emergency:'badge-red'};
+  var em = level==='High'?'&#x1F534; ':level==='Medium'?'&#x1F7E1; ':level==='Low'?'&#x1F7E2; ':'&#x1F6A8; ';
+  return '<span class="badge '+(map[level]||'badge-blue')+'">'+em+level+'</span>';
+}
+
+function rBadge(r) {
+  return r==='High'?'<span class="badge badge-red">&#x1F534; High</span>':r==='Medium'?'<span class="badge badge-yellow">&#x1F7E1; Medium</span>':'<span class="badge badge-green">&#x1F7E2; Low</span>';
+}
+
+function triageResultHtml(result) {
+  var cls=result.level==='High'?'emergency':result.level==='Medium'?'high':'low';
+  return '<div class="triage-result '+cls+' slide-up"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:15px;font-weight:700">&#x1F916; AI Triage Result</div>'+tBadge(result.level)+'</div><div style="font-size:13px;line-height:1.6"><strong>Transcription:</strong> "'+result.text+'"</div><div style="font-size:13px;margin-top:8px"><strong>Symptoms:</strong> '+result.symptoms+'</div><div style="font-size:13px;margin-top:8px"><strong>AI Recommendation:</strong> '+result.rec+'</div><div style="margin-top:12px;display:flex;gap:8px"><button class="action-btn" onclick="showSnack('Booking priority appointment...')">&#x1F4C5; Book Appointment</button><button class="btn-sm blue" style="padding:8px 14px" onclick="showSnack('Forwarding to doctor...')">&#x1F4E4; Forward to Doctor</button></div></div>';
+}
+
+// =====================================================
+//  DOCTOR PORTAL
+// =====================================================
+function renderDoctorAppts() {
+  var rows = MOCK.doctor.appointments.map(function(a){
+    return '<tr><td><span class="badge badge-blue" style="font-family:monospace;font-size:11px">'+a.id+'</span></td><td><strong>'+a.patient+'</strong><br><span style="font-size:11px;color:#94A3B8">Age '+a.age+'</span></td><td>'+a.time+'</td><td><span class="badge '+(a.type==='OPD'?'badge-teal':'badge-purple')+'">'+a.type+'</span></td><td style="font-size:12px;color:#475569;max-width:180px">'+a.symptoms+'</td><td>'+tBadge(a.triage)+'</td><td>'+(a.status==='Confirmed'?'<span class="badge badge-green">&#x2714; Confirmed</span>':'<span class="badge badge-yellow">&#x23F3; Pending</span>')+'</td><td><button class="btn-sm green" onclick="showSnack('Starting consultation for '+a.patient+'')">Start</button></td></tr>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F4CB; OPD Appointments</h2><p>Today's schedule for Dr. Anjali Sharma</p></div><div class="grid-4" style="margin-bottom:18px">'+sCard('Total Today','22','&#x1F4CB;','&#x2191; 3 from yesterday',false)+sCard('Pending','4','&#x23F3;','Awaiting confirmation',false)+sCard('Critical','2','&#x1F6A8;','Immediate attention',true)+sCard('Avg Wait','18 min','&#x23F1;','Within normal range',false)+'</div><div class="data-table-wrap"><div class="data-table-header"><span class="dtitle">Patient Queue</span><div style="display:flex;gap:8px"><div class="search-bar" style="max-width:200px"><span>&#x1F50D;</span><input placeholder="Search..." /></div><button class="action-btn" onclick="showSnack('Refreshing...')">&#x1F504; Refresh</button></div></div><table class="data-table"><thead><tr><th>ID</th><th>Patient</th><th>Time</th><th>Type</th><th>Symptoms</th><th>Triage</th><th>Status</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+
+function renderDoctorTeleconsult() {
+  var tc = MOCK.doctor.teleconsults;
+  var cards = tc.map(function(c){
+    return '<div class="consult-card"><div class="consult-avatar" style="background:'+(c.status==='Waiting'?'#DC2626':'#0F766E')+'">'+c.patient[0]+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+c.patient+' <span style="font-size:12px;color:#94A3B8">(Age '+c.age+')</span></div><div style="font-size:12px;color:#475569;margin-top:2px">'+c.reason+'</div><div style="font-size:11px;color:#94A3B8;margin-top:4px">'+c.time+' &bull; Room: '+c.id+'</div></div><div style="display:flex;gap:8px;align-items:center"><span class="badge '+(c.status==='Waiting'?'badge-red':'badge-teal')+'">'+(c.status==='Waiting'?'&#x1F534; Waiting':'&#x1F4C5; Scheduled')+'</span><button class="btn-sm blue" onclick="showSnack('Launching video call with '+c.patient+'...')">&#x1F4F9; Join</button></div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F4F9; Teleconsultation</h2><p>Video consultations scheduled for today</p></div><div class="grid-2" style="margin-bottom:18px"><div class="card" style="background:linear-gradient(135deg,#0F766E,#0D9488);color:white;border:none"><div style="font-size:32px;font-weight:800">'+tc.length+'</div><div style="font-size:13px;opacity:.85;margin-top:4px">Consultations Today</div><div style="font-size:11px;opacity:.7;margin-top:6px">Next: '+tc[0].patient+' at '+tc[0].time+'</div></div><div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:8px">&#x1F4E1; Platform: Jitsi Meet</div><div style="font-size:12px;color:#475569">Secure E2E encrypted video calls. HIPAA/DISHA compliant.</div><button class="action-btn" style="margin-top:12px;display:inline-block" onclick="showSnack('Launching Jitsi conference room...')">&#x1F680; Join Conference</button></div></div>'+cards+'</div>';
+}
+
+function renderDoctorAlerts() {
+  var items = MOCK.doctor.alerts.map(function(a){
+    var em=a.level==='critical'?'&#x1F6A8;':a.level==='high'?'&#x26A0;&#xFE0F;':'&#x2139;&#xFE0F;';
+    return '<div class="alert-item '+a.level+'"><div style="font-size:22px">'+em+'</div><div style="flex:1"><div style="font-size:13.5px;font-weight:700">'+a.title+'</div><div style="font-size:12px;color:#475569;margin-top:3px">'+a.msg+'</div><div style="font-size:11px;color:#94A3B8;margin-top:5px">'+a.time+'</div></div><div style="display:flex;flex-direction:column;gap:6px"><button class="btn-sm '+(a.level==='critical'?'red':'green')+'" onclick="showSnack('Responding to alert...')">Respond</button><button class="btn-sm blue" onclick="showSnack('Opening chart...')">Chart</button></div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F6A8; Emergency Alerts</h2><p>Real-time clinical alerts requiring attention</p></div><div style="display:flex;gap:10px;margin-bottom:18px"><div class="card" style="flex:1;border-left:4px solid #DC2626"><div style="font-size:22px;font-weight:800;color:#DC2626">2</div><div class="text-sm" style="color:#475569">Critical</div></div><div class="card" style="flex:1;border-left:4px solid #F59E0B"><div style="font-size:22px;font-weight:800;color:#F59E0B">2</div><div class="text-sm" style="color:#475569">High</div></div><div class="card" style="flex:1;border-left:4px solid #3B82F6"><div style="font-size:22px;font-weight:800;color:#3B82F6">0</div><div class="text-sm" style="color:#475569">Medium</div></div></div>'+items+'</div>';
+}
+
+function renderDoctorStats() {
+  var d = MOCK.doctor.stats;
+  var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+  var maxV = Math.max.apply(null,d.monthly);
+  var bars = d.monthly.map(function(v,i){
+    return '<div class="spark-bar" data-h="'+Math.round(v/maxV*40)+'" data-c="'+(i===11?'#0F766E':'#99F6E4')+'" style="height:0;flex:1;border-radius:2px 2px 0 0;transition:height .8s '+(i*.04)+'s ease"></div>';
+  }).join('');
+  var cols = ['#0F766E','#0D9488','#1D4ED8','#4338CA','#DC2626'];
+  var diagBars = d.diagnoses.map(function(item,i){
+    return '<div class="bar-row"><span class="bar-label">'+item.l+'</span><div class="bar-track"><div class="bar-fill" data-pct="'+item.p+'" data-color="'+cols[i]+'" style="width:0"></div></div><span class="bar-val">'+item.p+'%</span></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F4CA; Clinical Statistics</h2><p>Performance metrics for Dr. Anjali Sharma</p></div><div class="grid-4" style="margin-bottom:18px">'+sCard('Today's Patients','22','&#x1F465;','&#x2191; 3 from yesterday',false)+sCard('Satisfaction','94%','&#x2B50;','Top 5% in district',false)+sCard('Avg Consult','14 min','&#x23F1;','&#x2193; 2 min improved',false)+sCard('Recovery Rate','91%','&#x2705;','Above national avg',false)+'</div><div class="grid-2" style="gap:16px"><div class="analytics-chart"><div class="card-title">&#x1F4C5; Monthly Consultations 2026</div><div style="display:flex;align-items:flex-end;gap:3px;height:48px;margin-top:10px">'+bars+'</div><div style="display:flex;justify-content:space-between;margin-top:5px">'+months.map(function(m){return '<div style="font-size:9px;color:#94A3B8">'+m+'</div>';}).join('')+'</div></div><div class="card"><div class="card-title">&#x1F3E5; Top Diagnoses</div><div class="bar-chart">'+diagBars+'</div></div></div></div>';
+}
+
+// =====================================================
+//  ASHA PORTAL
+// =====================================================
+function renderAshaVoice() {
+  var langBtns = MOCK.asha.languages.map(function(l){
+    return '<span onclick="showSnack('Language set to '+l+'')" style="padding:5px 13px;background:rgba(255,255,255,.2);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.4)">'+l+'</span>';
+  }).join('');
+  var transcripts = MOCK.asha.transcripts.map(function(t){
+    return '<div style="padding:12px 0;border-bottom:1px solid #E2E8F0"><div style="display:flex;justify-content:space-between"><div><div style="font-size:13px;font-weight:700">'+t.patient+' <span class="badge badge-teal" style="font-size:10px">'+t.lang+'</span></div><div style="font-size:13px;font-style:italic;margin-top:4px">"'+t.text+'"</div>'+(t.translation!=='-'?'<div style="font-size:12px;color:#475569;margin-top:2px">&#x2192; '+t.translation+'</div>':'')+'</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+tBadge(t.triage)+'<span style="font-size:11px;color:#94A3B8">'+t.time+'</span></div></div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F3A4; Voice Symptom Collection</h2><p>AI-powered multilingual voice triage for rural patients</p></div><div class="voice-box"><div style="font-size:13px;opacity:.85;margin-bottom:14px">Select Language &bull; Record Symptoms &bull; AI Triage</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px">'+langBtns+'</div><button class="mic-btn '+(state.voiceRecording?'pulse-ring recording':'')+'" id="mic-btn" onclick="toggleVoice()">&#x1F3A4;</button><div id="voice-status" style="font-size:14px;margin-bottom:6px">'+(state.voiceRecording?'&#x1F534; Recording... Speak clearly':'Tap to Start Recording')+'</div><div style="font-size:12px;opacity:.7">AI auto-detects language and transcribes</div></div>'+(state.voiceResult?triageResultHtml(state.voiceResult):'')+' <div class="card" style="margin-top:18px"><div class="card-title">&#x1F4DD; Recent Transcripts</div>'+transcripts+'</div></div>';
+}
+
+function renderAshaPatients() {
+  var cards = MOCK.asha.patients.map(function(p){
+    return '<div class="patient-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:'+(p.risk==='High'?'#DC2626':p.risk==='Medium'?'#F59E0B':'#0F766E')+';width:38px;height:38px;font-size:14px">'+p.name[0]+'</div><div><div style="font-size:14px;font-weight:700">'+p.name+'</div><div style="font-size:12px;color:#475569">Age '+p.age+' &bull; '+p.village+'</div></div></div>'+rBadge(p.risk)+'</div><div style="margin-top:10px;font-size:12.5px;color:#475569">'+p.condition+'</div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#94A3B8">Last: '+p.last+'</span><button class="btn-sm green" onclick="showSnack('Opening '+p.name+' profile...')">View</button></div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F465; Patient List</h2><p>Active patients under your care</p></div><div class="grid-4" style="margin-bottom:18px">'+sCard('Total Patients','48','&#x1F465;','6 added this week',false)+sCard('High Risk','8','&#x1F6A8;','Needs attention',true)+sCard('Visits Due','12','&#x1F4C5;','This week',false)+sCard('Vaccinations','7','&#x1F489;','Overdue',false)+'</div><div style="display:flex;gap:12px;margin-bottom:16px"><div class="search-bar"><span>&#x1F50D;</span><input placeholder="Search patient, village..." /></div><button class="action-btn" onclick="showSnack('Adding new patient...')">+ Add Patient</button></div><div class="grid-2">'+cards+'</div></div>';
+}
+
+function renderAshaAlerts() {
+  var items = MOCK.asha.alerts.map(function(a){
+    var em=a.level==='critical'?'&#x1F6A8;':'&#x26A0;&#xFE0F;';
+    return '<div class="alert-item '+a.level+'"><div style="font-size:22px">'+em+'</div><div style="flex:1"><div style="font-size:13.5px;font-weight:700">'+a.title+'</div><div style="font-size:12px;color:#475569;margin-top:3px">'+a.msg+'</div><div style="font-size:11px;color:#94A3B8;margin-top:5px">'+a.time+'</div></div><button class="btn-sm '+(a.level==='critical'?'red':'green')+'" onclick="showSnack('Scheduling visit...')">Visit</button></div>';
+  }).join('');
+  var visits = ['09:00 Sunita Kumari, Rampur (Antenatal check)','10:30 Ritu Singh, Rampur (MUAC measurement)','12:00 Lalita Sharma, Bijapur (DOTS supervision)','14:00 Immunization camp, Keshavpur (4 children)'];
+  var visitItems = visits.map(function(v,i){
+    return '<div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #E2E8F0"><div style="width:22px;height:22px;border-radius:50%;background:'+(i<2?'#DCFCE7':'#F1F5F9')+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:'+(i<2?'#166534':'#64748B')+';flex-shrink:0">'+(i<2?'&#x2714;':i+1)+'</div><span style="font-size:13px">'+v+'</span></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F514; Alerts &amp; Visits</h2><p>Priority follow-ups and action items</p></div><div class="grid-2" style="margin-bottom:18px"><div class="card" style="border-left:4px solid #DC2626"><div style="font-size:24px;font-weight:800;color:#DC2626">2</div><div style="font-size:13px;color:#475569">Critical Alerts</div></div><div class="card" style="border-left:4px solid #F59E0B"><div style="font-size:24px;font-weight:800;color:#F59E0B">1</div><div style="font-size:13px;color:#475569">High Priority</div></div></div>'+items+'<div class="card" style="margin-top:16px"><div class="card-title">&#x1F4C5; Today's Visit Plan</div>'+visitItems+'</div></div>';
+}
+
+// =====================================================
+//  PATIENT PORTAL
+// =====================================================
+function renderPatientVoice() {
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F3E5; AI Voice Symptom Checker</h2><p>Describe your symptoms in any Indian language for AI-powered assessment</p></div><div class="voice-box" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6,#0D9488)"><div style="font-size:15px;font-weight:700;margin-bottom:6px">Tell Us How You Feel</div><div style="font-size:13px;opacity:.8;margin-bottom:18px">Hindi, English, Tamil, Bengali or any Indian language</div><button class="mic-btn" id="pat-mic" onclick="simulatePatientTriage()">&#x1F3A4;</button><div style="font-size:14px;margin-top:4px" id="pat-voice-status">Tap microphone &amp; speak symptoms</div><div style="margin-top:14px;font-size:12px;opacity:.75">&#x1F512; Your health data is private and secure</div></div><div id="pat-triage-result"></div><div class="card" style="margin-top:18px"><div class="card-title">&#x1F4A1; Quick Symptom Select</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+['&#x1F912; Fever','&#x1F927; Cough','&#x1F915; Headache','&#x1F922; Nausea','&#x1F494; Chest Pain','&#x1F62E;&#x200D;&#x1F4A8; Breathing Difficulty','&#x1F9B5; Body Pain','&#x1F634; Fatigue'].map(function(s){return '<button class="faq-chip" onclick="simPatientWith(''+s+'')">'+s+'</button>';}).join('')+'</div></div></div>';
+}
+
+function renderPatientAppts() {
+  var apt = MOCK.patient.appointments.map(function(a){
+    return '<div style="display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #E2E8F0;align-items:center"><div style="width:46px;height:46px;border-radius:12px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">&#x1F468;&#x200D;&#x2695;&#xFE0F;</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+a.doctor+'</div><div style="font-size:12px;color:#475569">'+a.dept+' &bull; '+a.type+'</div><div style="font-size:12px;color:#94A3B8;margin-top:3px">'+a.date+' at '+a.time+'</div></div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end"><span class="badge '+(a.status==='Confirmed'?'badge-green':'badge-yellow')+'">'+a.status+'</span>'+(a.type==='Teleconsult'?'<button class="btn-sm blue" onclick="showSnack('Joining video call...')">&#x1F4F9; Join</button>':'<button class="btn-sm green" onclick="showSnack('Viewing details...')">View</button>')+'</div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F4C5; My Consultations</h2><p>Upcoming and past appointments</p></div><div class="grid-3" style="margin-bottom:18px">'+sCard('Upcoming','3','&#x1F4C5;','Next: Tomorrow 9AM',false)+sCard('ABHA Health ID','HID10001','&#x1F194;','Linked to national registry',false)+sCard('Last Visit','28 Aug 2026','&#x1F558;','Dr. Anjali Sharma',false)+'</div><div class="card" style="margin-bottom:16px"><div class="card-title">&#x1F4C6; Upcoming Appointments</div>'+apt+'</div><div class="card"><div class="card-title">&#x2795; Book New Appointment</div><div class="form-row"><div class="form-group"><label class="form-label">Specialty</label><select class="form-input"><option>General Medicine</option><option>Cardiology</option><option>Dermatology</option><option>Orthopaedics</option><option>Paediatrics</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-input"><option>OPD (In-Person)</option><option>Teleconsultation</option></select></div></div><button class="btn-primary blue" style="width:auto;padding:10px 24px;margin-top:6px" onclick="showSnack('Booking appointment... SMS confirmation will be sent.')">&#x1F4C5; Book Appointment</button></div></div>';
+}
+
+function renderPatientReferrals() {
+  var steps = ['Referred','Scheduled','Attended','Complete'];
+  var refs = MOCK.patient.referrals.map(function(r){
+    var stepHtml = steps.map(function(l,i){
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative">'+(i<steps.length-1?'<div style="position:absolute;top:7px;left:50%;width:100%;height:2px;background:'+(i<r.steps?'var(--accent)':'#E2E8F0')+';z-index:0"></div>':'')+'<div style="width:16px;height:16px;border-radius:50%;background:'+(i<r.steps?'var(--accent)':i===r.steps?'#FCD34D':'#F1F5F9')+';border:2px solid '+(i<r.steps?'var(--accent)':i===r.steps?'#D97706':'#E2E8F0')+';z-index:1;display:flex;align-items:center;justify-content:center;font-size:8px;color:white"></div><div style="font-size:10px;color:#94A3B8;margin-top:4px;text-align:center">'+l+'</div></div>';
+    }).join('');
+    return '<div class="referral-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:15px;font-weight:700">'+r.hospital+'</div><div style="font-size:13px;color:#475569;margin-top:2px">'+r.dept+'</div><div style="font-size:11px;color:#94A3B8;font-family:monospace">REF# '+r.id+'</div></div><span class="badge '+(r.status==='Scheduled'?'badge-blue':'badge-teal')+'">'+r.status+'</span></div><div style="margin-top:12px;font-size:12px;color:#94A3B8">Appointment: '+r.date+'</div><div style="display:flex;position:relative;margin-top:10px">'+stepHtml+'</div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F3E8; Hospital Referrals</h2><p>Specialist referrals from your primary doctor</p></div>'+refs+'<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px;font-size:13px;color:#1E40AF;display:flex;gap:10px;margin-top:8px">&#x2139;&#xFE0F; Your referral letters and reports are automatically shared via your ABHA Health ID.</div></div>';
+}
+
+// =====================================================
+//  ADMIN PORTAL
+// =====================================================
+function renderAdminAnalytics() {
+  var kpi = MOCK.admin.kpis;
+  var td = MOCK.admin.analytics.triage;
+  var mc = MOCK.admin.analytics.monthly;
+  var maxMC = Math.max.apply(null,mc);
+  var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+  var bars = mc.map(function(v,i){
+    return '<div class="spark-bar" data-h="'+Math.round(v/maxMC*52)+'" data-c="'+(i===11?'#4338CA':'#A5B4FC')+'" style="height:0;flex:1;border-radius:3px 3px 0 0;transition:height .8s '+(i*.05)+'s ease"></div>';
+  }).join('');
+  var condBars = MOCK.admin.analytics.conditions.map(function(c,i){
+    var cols2=['#0F766E','#1D4ED8','#4338CA','#DC2626','#F59E0B'];
+    return '<div class="bar-row"><span class="bar-label">'+c.n+'</span><div class="bar-track"><div class="bar-fill" data-pct="'+Math.round(c.c/3421*100)+'" data-color="'+cols2[i]+'" style="width:0"></div></div><span class="bar-val">'+c.c.toLocaleString()+'</span></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F4C8; Analytics &amp; Reports</h2><p>System-wide health analytics dashboard</p></div><div class="grid-4" style="margin-bottom:18px">'+sCard('Total Patients',kpi.totalPatients.toLocaleString(),'&#x1F465;','&#x2191; 12.4% MoM',false)+sCard('Active ASHA',kpi.activeASHA.toLocaleString(),'&#x1F3C5;','24 districts',false)+sCard('Doctors Online',kpi.doctorsOnline,'&#x1FA7A;','Live now',false)+sCard('Consultations Today',kpi.consultationsToday.toLocaleString(),'&#x1F4CA;','&#x2191; 8.2% vs yesterday',false)+'</div><div class="grid-2" style="gap:16px;margin-bottom:16px"><div class="analytics-chart"><div class="card-title">&#x1F4C5; Monthly Cases 2026</div><div style="display:flex;align-items:flex-end;gap:3px;height:56px;margin-top:10px">'+bars+'</div><div style="display:flex;justify-content:space-between;margin-top:5px">'+months.map(function(m){return '<div style="font-size:9px;color:#94A3B8">'+m+'</div>';}).join('')+'</div></div><div class="card"><div class="card-title">&#x1F6A6; Triage Distribution</div><div class="bar-chart"><div class="bar-row"><span class="bar-label">&#x1F534; Critical</span><div class="bar-track"><div class="bar-fill" data-pct="'+td.critical+'" data-color="#DC2626" style="width:0"></div></div><span class="bar-val">'+td.critical+'%</span></div><div class="bar-row"><span class="bar-label">&#x1F7E0; High</span><div class="bar-track"><div class="bar-fill" data-pct="'+td.high+'" data-color="#F59E0B" style="width:0"></div></div><span class="bar-val">'+td.high+'%</span></div><div class="bar-row"><span class="bar-label">&#x1F535; Medium</span><div class="bar-track"><div class="bar-fill" data-pct="'+td.medium+'" data-color="#3B82F6" style="width:0"></div></div><span class="bar-val">'+td.medium+'%</span></div><div class="bar-row"><span class="bar-label">&#x1F7E2; Low</span><div class="bar-track"><div class="bar-fill" data-pct="'+td.low+'" data-color="#16A34A" style="width:0"></div></div><span class="bar-val">'+td.low+'%</span></div></div></div></div><div class="card"><div class="card-title">&#x1F3E5; Top Conditions (District-wide)</div><div class="bar-chart">'+condBars+'</div></div></div>';
+}
+
+function renderAdminDoctors() {
+  var rows = MOCK.admin.doctors.map(function(d){
+    var initials = d.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    return '<tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:'+colorMap.admin+';width:32px;height:32px;font-size:12px">'+initials+'</div><strong>'+d.name+'</strong></div></td><td>'+d.dept+'</td><td><strong>'+d.patients+'</strong></td><td>&#x2B50; '+d.rating+'</td><td><span class="badge '+(d.status==='Active'?'badge-green':'badge-yellow')+'">'+d.status+'</span></td><td><button class="btn-sm blue" onclick="showSnack('Opening '+d.name+' profile...')">View</button></td></tr>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F9D1;&#x200D;&#x2695; Doctor Registry</h2><p>Registered doctors and specialists</p></div><div style="display:flex;gap:12px;margin-bottom:16px"><div class="search-bar"><span>&#x1F50D;</span><input placeholder="Search doctor, specialty..." /></div><button class="action-btn" onclick="showSnack('Opening onboarding form...')">+ Onboard Doctor</button></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Doctor</th><th>Specialty</th><th>Patients Today</th><th>Rating</th><th>Status</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+
+function renderAdminAsha() {
+  var cards = MOCK.admin.asha.map(function(w){
+    return '<div class="card"><div style="display:flex;gap:10px;align-items:center;margin-bottom:12px"><div class="avatar" style="background:#0D9488;width:40px;height:40px;font-size:16px">'+w.name[0]+'</div><div><div style="font-size:14px;font-weight:700">'+w.name+'</div><div style="font-size:12px;color:#475569">'+w.district+' District</div></div><span class="badge '+(w.perf==='Excellent'?'badge-green':w.perf==='Good'?'badge-blue':'badge-yellow')+'" style="margin-left:auto">'+w.perf+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px"><div style="background:#F8FAFC;padding:8px;border-radius:6px"><div style="color:#94A3B8">Villages</div><div style="font-weight:800;font-size:18px">'+w.villages+'</div></div><div style="background:#F8FAFC;padding:8px;border-radius:6px"><div style="color:#94A3B8">Patients</div><div style="font-weight:800;font-size:18px">'+w.patients+'</div></div></div></div>';
+  }).join('');
+  return '<div class="slide-up"><div class="page-header"><h2>&#x1F3C5; ASHA Workers</h2><p>Active ASHA workers across all districts</p></div><div class="grid-4" style="margin-bottom:18px">'+sCard('Total ASHA','342','&#x1F3C5;','18 districts',false)+sCard('Active Today','287','&#x2705;','83.9% attendance',false)+sCard('Avg Patients','41','&#x1F465;','Per ASHA',false)+sCard('Top Performers','78','&#x2B50;','Excellent rating',false)+'</div><div class="grid-2">'+cards+'</div></div>';
+}
+
+// =====================================================
+//  VOICE SIMULATION
+// =====================================================
+function toggleVoice() {
+  state.voiceRecording = !state.voiceRecording;
+  if (!state.voiceRecording) {
+    state.voiceResult = {level:'High',text:'Bukhar hai, pet mein dard aur sir ghoom raha hai.',symptoms:'Fever (38.5 C), Abdominal Pain, Dizziness',rec:'Refer to PHC within 2 hours. Possible dengue/typhoid. Blood test recommended.'};
+  }
+  renderContent();
+}
+
+function simulatePatientTriage() {
+  var btn=document.getElementById('pat-mic'), st=document.getElementById('pat-voice-status');
+  if(btn){btn.innerHTML='&#x1F534;';btn.className='mic-btn pulse-ring';}
+  if(st) st.textContent='Listening... speak your symptoms';
+  setTimeout(function(){
+    if(btn){btn.innerHTML='&#x1F3A4;';btn.className='mic-btn';}
+    if(st) st.textContent='Processing with AI...';
+    setTimeout(function(){
+      var r=document.getElementById('pat-triage-result');
+      if(r) r.innerHTML=triageResultHtml({level:'Medium',text:'I have a headache, mild fever and body pain since yesterday.',symptoms:'Headache, Fever (37.8C), Myalgia',rec:'Rest and stay hydrated. Take paracetamol. Visit PHC if fever exceeds 39C or symptoms worsen after 48 hrs.'});
+    },1200);
+  },2500);
+}
+
+function simPatientWith(symptom) {
+  var r=document.getElementById('pat-triage-result');
+  if(!r) return;
+  var isEm = symptom.indexOf('Chest')>-1 || symptom.indexOf('Breathing')>-1;
+  r.innerHTML = triageResultHtml({level:isEm?'High':'Medium',text:'Patient selected: '+symptom,symptoms:symptom.replace(/[\u{1F000}-\u{FFFF}]/gu,'').trim(),rec:isEm?'Seek EMERGENCY care immediately. Call 112 or go to nearest hospital ER.':'Book OPD appointment for clinical evaluation. Rest and stay hydrated.'});
+}
+
+// =====================================================
+//  CHATBOT
+// =====================================================
+function initChatbot() {
+  state.chatMessages = [];
+  state.chatMessages.push({role:'bot',text:'**Namaste! I'm your SwasthyaSetu AI Assistant.**
+
+I can help with health queries, appointment guidance, medicine information, emergency contacts, and more.
+
+How can I help you today?',time:timeNow()});
+  renderChatMessages();
+}
+
+function toggleChatbot() {
+  state.chatOpen = !state.chatOpen;
+  document.getElementById('chatbot-window').classList.toggle('open', state.chatOpen);
+  document.getElementById('fab-badge').style.display = state.chatOpen ? 'none' : 'flex';
+  if(state.chatOpen){ document.getElementById('chat-input').focus(); scrollChat(); }
+}
+
+function renderChatMessages() {
+  var c = document.getElementById('chat-messages');
+  if(!c) return;
+  var html = state.chatMessages.map(function(m){
+    return '<div class="chat-msg '+m.role+'"><div class="msg-avatar" style="background:'+(m.role==='bot'?'#0F766E22':'#1D4ED822')+';">'+(m.role==='bot'?'&#x1F916;':'&#x1F464;')+'</div><div><div class="msg-bubble">'+fmtChat(m.text)+'</div><div class="chat-msg-time">'+m.time+'</div></div></div>';
+  }).join('');
+  if(state.chatThinking) {
+    html += '<div class="chat-msg bot"><div class="msg-avatar" style="background:#0F766E22">&#x1F916;</div><div><div class="chat-thinking"><div class="think-dot"></div><div class="think-dot"></div><div class="think-dot"></div></div></div></div>';
+  }
+  c.innerHTML = html;
+  if(!state.chatThinking && state.chatMessages.length===1) {
+    c.innerHTML += '<div class="faq-chips">'+['&#x1F48A; Medicine query','&#x1F4C5; Book appointment','&#x1FA7A; Symptoms help','&#x1F6A8; Emergency numbers','&#x1F194; ABHA Health ID','&#x1F912; Fever advice'].map(function(t){return '<button class="faq-chip" onclick="sendChatMsg(''+t+'')">'+t+'</button>';}).join('')+'</div>';
+  }
+  scrollChat();
+}
+
+function scrollChat() { var c=document.getElementById('chat-messages'); if(c) setTimeout(function(){c.scrollTop=c.scrollHeight;},50); }
+
+function fmtChat(t) {
+  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>').replace(/
+/g,'<br>');
+}
+
+function chatKeydown(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();} }
+
+function sendChat() {
+  var inp=document.getElementById('chat-input');
+  var txt=inp.value.trim(); if(!txt) return;
+  inp.value=''; sendChatMsg(txt);
+}
+
+function sendChatMsg(text) {
+  state.chatMessages.push({role:'user',text:text,time:timeNow()});
+  state.chatThinking=true; renderChatMessages();
+  setTimeout(function(){
+    var lower=text.toLowerCase();
+    var resp = fallbacks[Math.floor(Math.random()*fallbacks.length)];
+    for(var i=0;i<chatResponses.length;i++){
+      var r=chatResponses[i];
+      for(var j=0;j<r.keys.length;j++){
+        if(lower.indexOf(r.keys[j])>-1){resp=r.resp;break;}
+      }
+      if(resp!==fallbacks[0]&&resp!==fallbacks[1]&&resp!==fallbacks[2]&&resp!==fallbacks[3]) break;
+    }
+    var roleCtx={doctor:'\n\n&#x1FA7A; *Doctor tip: Check Clinical Stats for analytics.*',asha:'\n\n&#x1F3C5; *ASHA tip: Voice tab collects patient data in local languages.*',patient:'\n\n&#x1F9D1; *Patient tip: Use Voice Checker for AI symptom check.*',admin:'\n\n&#x1F6E1; *Admin tip: Analytics shows district-wide health trends.*'};
+    state.chatThinking=false;
+    state.chatMessages.push({role:'bot',text:resp+(roleCtx[state.role]||''),time:timeNow()});
+    renderChatMessages();
+  },1100+Math.random()*700);
+}
+
+function timeNow() {
+  return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+
+// =====================================================
+//  SNACKBAR
+// =====================================================
+function showSnack(msg) {
+  var s=document.getElementById('snackbar');
+  if(!s){
+    s=document.createElement('div');s.id='snackbar';
+    s.style.cssText='position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#0F172A;color:white;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:opacity .3s,transform .3s;opacity:0;';
+    document.body.appendChild(s);
+  }
+  s.textContent=msg; s.style.opacity='1'; s.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(s._t);
+  s._t=setTimeout(function(){s.style.opacity='0';s.style.transform='translateX(-50%) translateY(8px)';},2600);
+}
+</script>
+</body>
+</html>

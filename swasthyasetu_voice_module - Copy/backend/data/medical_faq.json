@@ -1,0 +1,252 @@
+[
+  {
+    "category": "Maternal Health",
+    "question": "How many antenatal checkups (ANC) should a pregnant woman have?",
+    "answer": "A pregnant woman should have at least 4 antenatal checkups (ANC): 1st within the first 12 weeks (1st trimester), 2nd between 14-26 weeks (2nd trimester), 3rd between 28-34 weeks, and 4th between 36 weeks and delivery. High-risk pregnancies may require more frequent visits."
+  },
+  {
+    "category": "Maternal Health",
+    "question": "Why are Iron and Folic Acid (IFA) tablets important during pregnancy?",
+    "answer": "Iron and Folic Acid tablets prevent maternal anemia and birth defects in the baby's brain and spinal cord. Every pregnant woman should take at least 180 IFA tablets starting from the 4th month of pregnancy, plus 180 days postpartum."
+  },
+  {
+    "category": "Maternal Health",
+    "question": "What are the danger signs during pregnancy requiring urgent hospital care?",
+    "answer": "Immediate hospital referral is needed if a pregnant woman experiences: severe headache with blurred vision, sudden swelling of face/hands, vaginal bleeding, high fever, convulsions/seizures, reduced or absent fetal movements, severe abdominal pain, or leaking amniotic fluid."
+  },
+  {
+    "category": "Maternal Health",
+    "question": "What is the Janani Suraksha Yojana (JSY) scheme?",
+    "answer": "JSY is a safe motherhood scheme under the National Health Mission that provides cash assistance to pregnant women below poverty line delivering in government or accredited private health facilities to promote institutional delivery and reduce maternal mortality."
+  },
+  {
+    "category": "Maternal Health",
+    "question": "What food should a pregnant woman eat for adequate nutrition?",
+    "answer": "A pregnant woman should eat an extra meal daily, including green leafy vegetables (spinach, methi), pulses/dal, milk, eggs or meat if culturally accepted, seasonal fruits, and jaggery. Drink plenty of clean water and avoid fasting."
+  },
+  {
+    "category": "Postpartum & Newborn Care",
+    "question": "How soon should breastfeeding be started after delivery?",
+    "answer": "Breastfeeding should be initiated within 1 hour of birth (golden hour). The first thick yellowish milk called colostrum is rich in antibodies and acts as the baby's first natural vaccine. Never discard colostrum."
+  },
+  {
+    "category": "Postpartum & Newborn Care",
+    "question": "What is exclusive breastfeeding and how long should it continue?",
+    "answer": "Exclusive breastfeeding means giving only breast milk to the infant—no water, honey, ghutti, or animal milk—for the first 6 completed months (180 days). It protects against diarrhea and pneumonia."
+  },
+  {
+    "category": "Postpartum & Newborn Care",
+    "question": "What is Kangaroo Mother Care (KMC) and who needs it?",
+    "answer": "KMC involves skin-to-skin contact between mother and baby, combined with frequent exclusive breastfeeding. It is essential for low birth weight (<2.5 kg) and premature babies to prevent hypothermia and promote weight gain."
+  },
+  {
+    "category": "Postpartum & Newborn Care",
+    "question": "How should the newborn's umbilical cord stump be cared for?",
+    "answer": "Keep the umbilical cord stump clean and completely dry. Do not apply cow dung, oil, turmeric, or powder. Apply 7.1% chlorhexidine gel if prescribed by a health worker. If there is redness, foul smell, or pus, consult the doctor immediately."
+  },
+  {
+    "category": "Postpartum & Newborn Care",
+    "question": "What are the danger signs in a newborn baby?",
+    "answer": "Danger signs in a newborn: unable to feed or suckle, convulsions/fits, fast breathing (>60 breaths/min) or chest indrawing, severe chest retractions, fever (>37.5°C) or cold to touch (<35.5°C), yellowish palms and soles (severe jaundice), or sluggish/lethargic movements."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "How to treat diarrhea and dehydration in children at home?",
+    "answer": "Give Oral Rehydration Salt (ORS) solution after every loose stool. Dissolve 1 packet of ORS in 1 liter of boiled and cooled clean water. Continue breastfeeding and feeding. Give Zinc tablets (20 mg for >6 months, 10 mg for <6 months) daily for 14 days."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "What are the danger signs of severe dehydration in a child with diarrhea?",
+    "answer": "Sunken eyes, extreme thirst or inability to drink, skin pinch goes back very slowly (>2 seconds), lethargy, unconsciousness, or absence of tears when crying. Take the child immediately to the nearest Primary Health Centre (PHC)."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "When should complementary feeding begin for an infant?",
+    "answer": "Complementary feeding should begin at 6 completed months alongside continued breastfeeding. Start with semi-solid mashed foods like khichdi with ghee/oil, mashed banana, dalia, and boiled vegetables. Feed 2-3 times daily initially."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "What vaccines are given to a child at birth under the National Immunization Schedule?",
+    "answer": "At birth, a newborn receives: BCG (protects against severe tuberculosis), Oral Polio Vaccine (OPV-0 dose), and Hepatitis B birth dose (within 24 hours of delivery)."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "Which vaccines are given at 6, 10, and 14 weeks of age?",
+    "answer": "At 6, 10, and 14 weeks, infants receive: Pentavalent vaccine (DPT + Hep B + Hib), Oral Polio Vaccine (OPV), Rotavirus vaccine, and fractional Inactivated Polio Vaccine (fIPV) at 6 and 14 weeks, along with Pneumococcal Conjugate Vaccine (PCV)."
+  },
+  {
+    "category": "Child Health & Nutrition",
+    "question": "What are the symptoms of pneumonia in a young child?",
+    "answer": "Pneumonia symptoms: fast breathing (over 50 breaths/min for 2-11 months, over 40 breaths/min for 1-5 years), chest indrawing (lower chest sucks in during inhalation), fever, and inability to drink or breastfeed. This is an emergency needing immediate antibiotics at a health facility."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "What are the classic symptoms of Malaria?",
+    "answer": "Malaria causes high fever with severe chills and shivering (rigors), profuse sweating as fever breaks, severe headache, body ache, nausea, and vomiting. Test blood with a Rapid Diagnostic Kit (RDK) or peripheral blood smear before starting treatment."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "How is Tuberculosis (TB) suspected and diagnosed in rural clinics?",
+    "answer": "Suspect TB if someone has a persistent cough for 2 weeks or more, low-grade evening fever, night sweats, weight loss, loss of appetite, or blood in sputum. Diagnosis is made through sputum smear microscopy or CBNAAT / Truenat at the nearest DOTS center."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "Is TB treatment free in India?",
+    "answer": "Yes, under the National Tuberculosis Elimination Programme (NTEP), all TB testing and medications (DOTS) are completely free. Patients also receive Rs 500 per month nutritional support under the Nikshay Poshan Yojana."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "What are the symptoms and home care for Dengue fever?",
+    "answer": "Dengue causes sudden high fever, severe eye pain (behind eyes), bone-breaking muscle pain, rash, and fatigue. Ensure abundant fluid intake (ORS, tender coconut, dal water). Take paracetamol only; NEVER take aspirin or ibuprofen as they worsen bleeding."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "What are the warning signs of severe Dengue (Dengue Hemorrhagic Fever)?",
+    "answer": "Severe abdominal pain, persistent vomiting, bleeding from gums or nose, vomiting blood, black stools, extreme restlessness, cold clammy skin, or sudden drop in platelet count. Immediate hospital admission is critical."
+  },
+  {
+    "category": "Infectious Diseases",
+    "question": "How is Typhoid fever transmitted and prevented?",
+    "answer": "Typhoid is caused by Salmonella typhi spread through contaminated food and water (fecal-oral route). Prevention: drink boiled or filtered water, eat hot freshly cooked food, wash hands with soap before eating, and avoid unhygienic street food."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "What is the correct immediate first aid for a snakebite?",
+    "answer": "Keep the victim calm and strictly immobilize the bitten limb (like a fracture using a splint). Remove rings, shoes, and tight clothing. Transport immediately to a hospital with Anti-Snake Venom (ASV). DO NOT cut, suck, apply tourniquet, or use herbal remedies."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "What should be done immediately after a dog, monkey, or animal bite?",
+    "answer": "Immediately wash the wound thoroughly under running tap water with soap for at least 15 minutes. Apply povidone-iodine antiseptic. DO NOT apply chili powder, lime, or turmeric. Go to the hospital right away for Anti-Rabies Vaccine (ARV) and Rabies Immunoglobulin (RIG)."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "What are the symptoms of a Heart Attack (Myocardial Infarction)?",
+    "answer": "Crushing chest pain or heavy pressure in the center of the chest, radiating to the left arm, jaw, neck, or back, accompanied by sweating, breathlessness, dizziness, and nausea. Call 108 ambulance or rush to emergency immediately."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "How to recognize a Stroke (FAST method)?",
+    "answer": "Use FAST: F - Face drooping on one side; A - Arm weakness or numbness; S - Speech difficulty (slurred words); T - Time to call 108 / rush to hospital immediately. Stroke treatments must be started within 3 to 4.5 hours."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "What first aid should be given for burn injuries?",
+    "answer": "Cool the burn immediately under cool, running tap water for 10-20 minutes. Cover loosely with a clean dry cloth. DO NOT apply ice, toothpaste, cow dung, ghee, or butter. DO NOT burst blisters. Seek medical care for large or face burns."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "How to control severe bleeding from an external wound?",
+    "answer": "Apply firm, direct pressure on the wound with a clean cloth, gauze, or bandage. Keep pressure steady for at least 10 minutes without lifting the cloth. Elevate the injured limb above heart level if possible. Rush to the nearest health facility."
+  },
+  {
+    "category": "Emergency & First Aid",
+    "question": "What is the emergency helpline number for ambulance in India?",
+    "answer": "In India, call 108 for emergency medical ambulance service, or 102 for pregnant women and infant transportation under the Janani Shishu Suraksha Karyakram (JSSK)."
+  },
+  {
+    "category": "Chronic Diseases",
+    "question": "What is normal blood pressure and what is Hypertension?",
+    "answer": "Normal blood pressure is around 120/80 mmHg. Hypertension (high blood pressure) is when readings consistently exceed 140/90 mmHg. It often has no symptoms ('silent killer') and requires regular BP checks, low salt diet, and daily medication."
+  },
+  {
+    "category": "Chronic Diseases",
+    "question": "What are the early warning signs of Diabetes Mellitus?",
+    "answer": "Excessive thirst (polydipsia), frequent urination especially at night (polyuria), increased hunger, unexplained weight loss, delayed healing of small cuts, tingling in feet, and persistent tiredness. Check fasting blood sugar levels."
+  },
+  {
+    "category": "Chronic Diseases",
+    "question": "How can a diabetic patient take care of their feet?",
+    "answer": "Wash feet daily with mild soap and dry thoroughly, especially between toes. Never walk barefoot even inside the house. Wear well-fitting footwear. Inspect feet daily for cuts, blisters, or red spots. Consult an ASHA or doctor promptly for any foot sore."
+  },
+  {
+    "category": "Chronic Diseases",
+    "question": "Can blood pressure or diabetes medication be stopped once levels are normal?",
+    "answer": "No. Blood pressure and diabetes medicines control the disease but do not cure it permanently. Stopping medicines without a doctor's advice can cause sudden spike in BP, stroke, kidney failure, or heart attack."
+  },
+  {
+    "category": "Chronic Diseases",
+    "question": "What lifestyle changes help manage high blood pressure?",
+    "answer": "Reduce dietary salt to less than 1 teaspoon (5g) daily, avoid papad, pickles, and processed snacks. Walk for 30 minutes 5 days a week. Quit smoking, bidi, and alcohol. Eat green vegetables, fruits, and maintain healthy weight."
+  },
+  {
+    "category": "Community & ASHA Healthcare",
+    "question": "Who is an ASHA worker and what services does she provide?",
+    "answer": "ASHA (Accredited Social Health Activist) is a trained female community health volunteer. She assists pregnant women with ANC, coordinates institutional delivery, tracks infant immunization, provides ORS/Zinc and contraceptive pills, and connects villagers to Primary Health Centres (PHC)."
+  },
+  {
+    "category": "Community & ASHA Healthcare",
+    "question": "What is Village Health Sanitation and Nutrition Day (VHSND)?",
+    "answer": "VHSND is organized once every month in the village at an Anganwadi centre. It provides immunizations, ANC checkups, growth monitoring of children, IFA distribution, and health education to mothers and adolescents."
+  },
+  {
+    "category": "Community & ASHA Healthcare",
+    "question": "What benefits does the Ayushman Bharat PM-JAY scheme provide?",
+    "answer": "Ayushman Bharat PM-JAY provides health insurance coverage of up to Rs 5 Lakhs per eligible family per year for secondary and tertiary hospitalization across empaneled public and private hospitals across India."
+  },
+  {
+    "category": "Water, Sanitation & Hygiene",
+    "question": "How can drinking water be made safe at home?",
+    "answer": "Boil water vigorously for at least 1-2 minutes to kill bacteria, viruses, and parasites. Alternatively, use chlorine tablets (halazone) or a certified ceramic/candle filter. Always store drinking water in clean covered containers with a ladle or tap."
+  },
+  {
+    "category": "Water, Sanitation & Hygiene",
+    "question": "What are the critical times to wash hands with soap and water?",
+    "answer": "Critical handwashing times: before cooking or preparing food, before eating or feeding a child, after using the toilet or latrine, after cleaning a child's bottom or handling soiled diapers, and after handling animals or sick family members."
+  },
+  {
+    "category": "Water, Sanitation & Hygiene",
+    "question": "Why is open defecation harmful to village health?",
+    "answer": "Open defecation contaminates soil and water sources, leading to recurring diarrhea, cholera, typhoid, and intestinal worm infestations among children. Always use a sanitary household or community latrine."
+  },
+  {
+    "category": "Women's Health & Family Planning",
+    "question": "What temporary contraceptive methods are available at the sub-centre or PHC?",
+    "answer": "Available temporary methods: Condoms (Nirodh), Oral Contraceptive Pills (Mala-N), Weekly non-hormonal pill (Chhaya), Injectable contraceptive (Antara - every 3 months), and Copper-T (IUD 380A for 10 years / 375 for 5 years). All provided free."
+  },
+  {
+    "category": "Women's Health & Family Planning",
+    "question": "What should an adolescent girl do during painful or irregular menstruation?",
+    "answer": "Rest with a warm compress on the lower abdomen, drink warm fluids, and maintain good genital hygiene using clean sanitary pads changed every 4-6 hours. Take IFA blue tablets for anemia. If pain is debilitating or bleeding lasts >7 days, consult a medical officer."
+  },
+  {
+    "category": "Respiratory Health",
+    "question": "Why is indoor smoke from chulhas (firewood stoves) dangerous for women and children?",
+    "answer": "Indoor biomass smoke contains carbon monoxide and fine particulates that cause Chronic Obstructive Pulmonary Disease (COPD), chronic bronchitis, cataracts in women, and severe pneumonia and low birth weight in infants. Use ventilated stoves or PM Ujjwala LPG."
+  },
+  {
+    "category": "Respiratory Health",
+    "question": "How to relieve mild cough and cold without antibiotics?",
+    "answer": "Rest, drink plenty of warm water, ginger-tulsi-honey decoction (for >1 year old), steam inhalation, and saline nasal drops. Common colds are viral; antibiotics do not cure viruses and should never be taken without a prescription."
+  },
+  {
+    "category": "Mental Health",
+    "question": "What are common signs of depression or anxiety in rural community members?",
+    "answer": "Persistent sadness, withdrawal from family activities, loss of interest in work, unexplained body aches or weakness, sleeplessness, crying spells, or expressing thoughts of worthlessness or self-harm. Tele-MANAS helpline (14416) provides 24/7 free counseling."
+  },
+  {
+    "category": "General Health",
+    "question": "What should be done if someone faints or loses consciousness?",
+    "answer": "Lay the person flat on their back and elevate their legs slightly (about 12 inches) to restore blood flow to the brain. Loosen tight collars and belts. Ensure fresh air. DO NOT force them to drink water while unconscious. If they don't wake up within 1 minute, call for help."
+  },
+  {
+    "category": "General Health",
+    "question": "What are the common symptoms of Anemia in women and children?",
+    "answer": "Pale inner eyelids, tongue, palms and nail beds, extreme fatigue, dizziness upon standing, breathlessness with minor walking, rapid heartbeat, and pica (craving to eat dirt or chalk). Confirm with a Hemoglobin (Hb) blood test."
+  },
+  {
+    "category": "General Health",
+    "question": "How to treat intestinal worms in children and family members?",
+    "answer": "Albendazole (400 mg chewable tablet single dose for >2 years, 200 mg for 1-2 years) is given every 6 months during National Deworming Day (NDD). Wash hands before eating, keep nails trimmed, and always wear slippers."
+  },
+  {
+    "category": "Eye & Ear Health",
+    "question": "What are the early signs of Cataract (Motiyabind) in elderly villagers?",
+    "answer": "Cloudy or blurry vision, colors appearing faded, glare from headlights or sunlight, difficulty seeing at night, and double vision in one eye. Cataract surgery is simple, highly effective, and done free under the National Programme for Control of Blindness."
+  },
+  {
+    "category": "Eye & Ear Health",
+    "question": "What should you do if an ear has persistent pus discharge?",
+    "answer": "Keep the ear dry—do not let water enter while bathing. DO NOT put warm oil, garlic, or herbal juice into the ear canal. Consult an MBBS doctor or visit the PHC for antibiotic ear drops. Untreated ear infections can cause permanent hearing loss."
+  }
+]

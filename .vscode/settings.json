@@ -1,0 +1,17 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend/venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend",
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend/src",
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend/venv/Lib/site-packages"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend",
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend/src",
+    "${workspaceFolder}/swasthyasetu_voice_module - Copy/backend/venv/Lib/site-packages"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingImports": "none",
+    "reportUnusedImport": "none"
+  }
+}

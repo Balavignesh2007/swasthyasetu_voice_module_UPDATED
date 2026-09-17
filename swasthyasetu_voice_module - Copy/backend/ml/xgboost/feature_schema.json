@@ -1,0 +1,14 @@
+{
+  "features": [
+    "Fever",
+    "Cough",
+    "Difficulty Breathing",
+    "Chest Pain",
+    "Headache",
+    "Abdominal Pain",
+    "Vomiting",
+    "Diarrhea",
+    "Age_Over_60",
+    "Age_Under_5"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "dataset": "smolify/smolified-clinical-symptom-router",
+  "train_samples": 8511,
+  "test_samples": 1502,
+  "accuracy": 0.757,
+  "accuracy_percentage": "75.70%",
+  "macro_f1": 0.7603,
+  "weighted_f1": 0.7558,
+  "emergency_precision": 0.789,
+  "emergency_recall": 0.8366,
+  "emergency_f1": 0.8121,
+  "confusion_matrix": [
+    [
+      389,
+      65,
+      11
+    ],
+    [
+      88,
+      382,
+      96
+    ],
+    [
+      16,
+      89,
+      366
+    ]
+  ],
+  "classification_report": {
+    "EMERGENCY": {
+      "precision": 0.7890466531440162,
+      "recall": 0.8365591397849462,
+      "f1-score": 0.8121085594989561,
+      "support": 465.0
+    },
+    "HIGH_RISK": {
+      "precision": 0.7126865671641791,
+      "recall": 0.6749116607773852,
+      "f1-score": 0.6932849364791288,
+      "support": 566.0
+    },
+    "LOW_RISK": {
+      "precision": 0.773784355179704,
+      "recall": 0.7770700636942676,
+      "f1-score": 0.7754237288135594,
+      "support": 471.0
+    },
+    "accuracy": 0.7569906790945407,
+    "macro avg": {
+      "precision": 0.7585058584959664,
+      "recall": 0.7628469547521997,
+      "f1-score": 0.7602724082638814,
+      "support": 1502.0
+    },
+    "weighted avg": {
+      "precision": 0.7554858335662673,
+      "recall": 0.7569906790945407,
+      "f1-score": 0.755828449058181,
+      "support": 1502.0
+    }
+  }
+}

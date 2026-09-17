@@ -1,0 +1,5 @@
+{
+  "Emergency": "EMERGENCY",
+  "Urgent": "HIGH_RISK",
+  "Routine": "LOW_RISK"
+}

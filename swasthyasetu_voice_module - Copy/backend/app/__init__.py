@@ -1,0 +1,1 @@
+"""SwasthyaSetu backend application package."""
