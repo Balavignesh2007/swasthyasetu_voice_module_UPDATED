@@ -134,12 +134,16 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 20,
+        vertical: isMobile ? 12 : 24,
+      ),
       child: Container(
-        width: 820,
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
+        width: isMobile ? double.infinity : 820,
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.90),
         child: Column(
           children: [
             // Header
@@ -263,49 +267,91 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
   }
 
   Widget _buildControls() {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
       color: const Color(0xFFF8FAFC),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Location and radius row
-          Row(
-            children: [
-              const Icon(Icons.my_location_rounded, color: Color(0xFF059669), size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Patient Location: ${widget.patientLocationName}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Radius selector buttons
-              const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-              ...[5.0, 10.0, 20.0].map((r) {
-                final isSel = _radiusKm == r;
-                return Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: ChoiceChip(
-                    label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
-                    selected: isSel,
-                    selectedColor: const Color(0xFF059669),
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    visualDensity: VisualDensity.compact,
-                    onSelected: (val) {
-                      if (val) {
-                        setState(() => _radiusKm = r);
-                        _loadPharmacies();
-                      }
-                    },
+          if (isMobile) ...[
+            Row(
+              children: [
+                const Icon(Icons.my_location_rounded, color: Color(0xFF059669), size: 16),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Location: ${widget.patientLocationName}',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-              }),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                ...[5.0, 10.0, 20.0].map((r) {
+                  final isSel = _radiusKm == r;
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: ChoiceChip(
+                      label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
+                      selected: isSel,
+                      selectedColor: const Color(0xFF059669),
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (val) {
+                        if (val) {
+                          setState(() => _radiusKm = r);
+                          _loadPharmacies();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ] else
+            Row(
+              children: [
+                const Icon(Icons.my_location_rounded, color: Color(0xFF059669), size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Patient Location: ${widget.patientLocationName}',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Radius selector buttons
+                const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                ...[5.0, 10.0, 20.0].map((r) {
+                  final isSel = _radiusKm == r;
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: ChoiceChip(
+                      label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
+                      selected: isSel,
+                      selectedColor: const Color(0xFF059669),
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (val) {
+                        if (val) {
+                          setState(() => _radiusKm = r);
+                          _loadPharmacies();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
+            ),
           const SizedBox(height: 12),
 
           // Medicine Search Input
@@ -382,6 +428,8 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
     final isOpen = pharm['is_open'] == true;
     final medicines = List<Map<String, dynamic>>.from(pharm['medicines'] ?? []);
 
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -395,7 +443,7 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isMobile ? 12 : 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -407,15 +455,15 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 4,
                       children: [
-                        Flexible(
-                          child: Text(
-                            name,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
-                          ),
+                        Text(
+                          name,
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
                         ),
-                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
@@ -456,10 +504,10 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               // Distance Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 decoration: BoxDecoration(
                   color: const Color(0xFFECFDF5),
                   borderRadius: BorderRadius.circular(8),
@@ -468,7 +516,7 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.directions_walk_rounded, color: Color(0xFF059669), size: 16),
+                    const Icon(Icons.directions_walk_rounded, color: Color(0xFF059669), size: 14),
                     const SizedBox(width: 4),
                     Text(
                       '$distance km',
@@ -596,8 +644,10 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
           const SizedBox(height: 12),
 
           // Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               OutlinedButton.icon(
                 icon: const Icon(Icons.phone_in_talk, size: 14),
@@ -614,7 +664,6 @@ class _NearbyMedicineAvailabilityDialogState extends State<NearbyMedicineAvailab
                   );
                 },
               ),
-              const SizedBox(width: 8),
               ElevatedButton.icon(
                 icon: const Icon(Icons.bookmark_add_outlined, size: 14),
                 label: const Text('Reserve Medicine'),
@@ -784,12 +833,16 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 20,
+        vertical: isMobile ? 12 : 24,
+      ),
       child: Container(
-        width: 820,
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
+        width: isMobile ? double.infinity : 820,
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.90),
         child: Column(
           children: [
             // Header
@@ -913,49 +966,91 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
   }
 
   Widget _buildControls() {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
       color: const Color(0xFFF8FAFC),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 12 : 20, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Location and radius row
-          Row(
-            children: [
-              const Icon(Icons.my_location_rounded, color: Color(0xFF4F46E5), size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Patient Location: ${widget.patientLocationName}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Radius selector buttons
-              const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-              ...[5.0, 10.0, 15.0, 25.0].map((r) {
-                final isSel = _radiusKm == r;
-                return Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: ChoiceChip(
-                    label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
-                    selected: isSel,
-                    selectedColor: const Color(0xFF4F46E5),
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    visualDensity: VisualDensity.compact,
-                    onSelected: (val) {
-                      if (val) {
-                        setState(() => _radiusKm = r);
-                        _loadCentres();
-                      }
-                    },
+          if (isMobile) ...[
+            Row(
+              children: [
+                const Icon(Icons.my_location_rounded, color: Color(0xFF4F46E5), size: 16),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Location: ${widget.patientLocationName}',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-              }),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                ...[5.0, 10.0, 15.0, 25.0].map((r) {
+                  final isSel = _radiusKm == r;
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: ChoiceChip(
+                      label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
+                      selected: isSel,
+                      selectedColor: const Color(0xFF4F46E5),
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (val) {
+                        if (val) {
+                          setState(() => _radiusKm = r);
+                          _loadCentres();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ] else
+            Row(
+              children: [
+                const Icon(Icons.my_location_rounded, color: Color(0xFF4F46E5), size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Patient Location: ${widget.patientLocationName}',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Radius selector buttons
+                const Text('Radius: ', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                ...[5.0, 10.0, 15.0, 25.0].map((r) {
+                  final isSel = _radiusKm == r;
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: ChoiceChip(
+                      label: Text('${r.toInt()} km', style: TextStyle(fontSize: 11, color: isSel ? Colors.white : const Color(0xFF334155))),
+                      selected: isSel,
+                      selectedColor: const Color(0xFF4F46E5),
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (val) {
+                        if (val) {
+                          setState(() => _radiusKm = r);
+                          _loadCentres();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
+            ),
           const SizedBox(height: 12),
 
           // Diagnostic Test Search Input
@@ -1032,6 +1127,7 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
     final isOpen = centre['is_open'] == true;
     final isNabl = centre['nabl_accredited'] == true;
     final tests = List<Map<String, dynamic>>.from(centre['tests'] ?? []);
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Container(
       decoration: BoxDecoration(
@@ -1046,7 +1142,7 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isMobile ? 12 : 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1058,15 +1154,15 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 4,
                       children: [
-                        Flexible(
-                          child: Text(
-                            name,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
-                          ),
+                        Text(
+                          name,
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
                         ),
-                        const SizedBox(width: 8),
                         if (isNabl)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -1097,10 +1193,10 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               // Distance Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 decoration: BoxDecoration(
                   color: const Color(0xFFEEF2FF),
                   borderRadius: BorderRadius.circular(8),
@@ -1109,7 +1205,7 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.location_on_outlined, color: Color(0xFF4F46E5), size: 16),
+                    const Icon(Icons.directions_walk_rounded, color: Color(0xFF4F46E5), size: 14),
                     const SizedBox(width: 4),
                     Text(
                       '$distance km',
@@ -1141,7 +1237,7 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    isOpen ? 'Open' : 'Closed',
+                    isOpen ? 'Open Now' : 'Closed',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -1170,7 +1266,7 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
 
           // Available tests table
           const Text(
-            'Available Tests & Pricing:',
+            'Available Diagnostic Tests & Pricing:',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
           ),
           const SizedBox(height: 8),
@@ -1181,21 +1277,21 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
             children: tests.map((t) {
               final tName = t['name'] ?? '';
               final price = t['price'] ?? 'Free';
-              final turnaround = t['turnaround'] ?? 'Same Day';
+              final turnaround = t['turnaround'] ?? '24 hrs';
               final avail = t['available'] == true;
 
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: avail ? const Color(0xFFF8FAFC) : const Color(0xFFFEF2F2),
+                  color: avail ? const Color(0xFFF5F3FF) : const Color(0xFFFEF2F2),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: avail ? const Color(0xFFE2E8F0) : const Color(0xFFFECACA)),
+                  border: Border.all(color: avail ? const Color(0xFFDDD6FE) : const Color(0xFFFECACA)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      avail ? Icons.science_outlined : Icons.remove_circle_outline,
+                      avail ? Icons.check_circle_rounded : Icons.cancel_rounded,
                       size: 14,
                       color: avail ? const Color(0xFF4F46E5) : Colors.red,
                     ),
@@ -1239,8 +1335,10 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
           const SizedBox(height: 12),
 
           // Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: 8,
+            runSpacing: 8,
             children: [
               OutlinedButton.icon(
                 icon: const Icon(Icons.phone_in_talk, size: 14),
@@ -1257,7 +1355,6 @@ class _NearbyDiagnosticCentresDialogState extends State<NearbyDiagnosticCentresD
                   );
                 },
               ),
-              const SizedBox(width: 8),
               ElevatedButton.icon(
                 icon: const Icon(Icons.event_available_rounded, size: 14),
                 label: const Text('Book Test Slot'),

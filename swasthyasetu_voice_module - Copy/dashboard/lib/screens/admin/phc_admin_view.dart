@@ -262,8 +262,10 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
     final q = _qualityDashboard;
     if (q == null) return const Center(child: Text('No Quality data'));
 
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -464,23 +466,45 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 4,
         children: [
-          Expanded(
-            flex: 3,
-            child: Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF475569))),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text('Today: $today', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text('7d: $week', style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text('30d: $month', style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+          Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF475569))),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text('Today: $today', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+              ),
+              const SizedBox(width: 5),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Text('7d: $week', style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+              ),
+              const SizedBox(width: 5),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Text('30d: $month', style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
+              ),
+            ],
           ),
         ],
       ),
@@ -544,22 +568,29 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
     final int bedsTotal = _facilityStatus?['facility']?['beds_total'] ?? 20;
     final roster = (_facilityStatus?['duty_roster'] as List<dynamic>?) ?? [];
 
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Live Availability Control Bar
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(isMobile ? 14 : 20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
-            child: Row(
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 16,
+              runSpacing: 12,
               children: [
-                Expanded(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 500),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -577,6 +608,7 @@ class _PHCAdminViewState extends State<PHCAdminView> with SingleTickerProviderSt
                 ),
                 // Toggle Button
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       isDoctorAvailable ? 'DOCTOR ON DUTY' : 'OFF DUTY',

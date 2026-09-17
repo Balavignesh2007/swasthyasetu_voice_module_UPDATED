@@ -195,7 +195,7 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F9),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width < 600 ? 10.0 : 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -354,10 +354,16 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 1. Top Badges & Timestamp Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 6,
                   children: [
-                    Row(
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -381,7 +387,6 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
@@ -427,27 +432,43 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.grey.shade200),
                   ),
-                  child: Row(
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      const Icon(Icons.person_pin, color: Color(0xFF0F766E), size: 18),
-                      const SizedBox(width: 6),
-                      Text(
-                        pName,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.person_pin, color: Color(0xFF0F766E), size: 18),
+                          const SizedBox(width: 6),
+                          Text(
+                            pName,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 14),
-                      const Icon(Icons.location_on_outlined, color: Colors.grey, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        pVillage,
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.location_on_outlined, color: Colors.grey, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            pVillage,
+                            style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 14),
-                      const Icon(Icons.phone_outlined, color: Colors.blueGrey, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        pPhone,
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.phone_outlined, color: Colors.blueGrey, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            pPhone,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -487,10 +508,10 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
                 const SizedBox(height: 14),
 
                 // 5. Action Buttons (ASHA CONTACTS PATIENT & ACKNOWLEDGE)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OutlinedButton.icon(
+                Builder(
+                  builder: (context) {
+                    final isMobileCard = MediaQuery.of(context).size.width < 600;
+                    final contactBtn = OutlinedButton.icon(
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: pPhone));
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -506,27 +527,51 @@ class _AshaAlertsViewState extends State<AshaAlertsView> with SingleTickerProvid
                       label: Text(
                         'CONTACT PATIENT ($pPhone)',
                         style: const TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.bold, fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFF0F766E)),
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    if (isUnack)
-                      ElevatedButton.icon(
-                        onPressed: () => _ackAlert(a.id),
-                        icon: const Icon(Icons.check_circle_outline, size: 16),
-                        label: const Text('ACKNOWLEDGE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade600,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        ),
-                      ),
-                  ],
+                    );
+
+                    final ackBtn = isUnack
+                        ? ElevatedButton.icon(
+                            onPressed: () => _ackAlert(a.id),
+                            icon: const Icon(Icons.check_circle_outline, size: 16),
+                            label: const Text('ACKNOWLEDGE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade600,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                          )
+                        : null;
+
+                    if (isMobileCard) {
+                      return Column(
+                        children: [
+                          SizedBox(width: double.infinity, child: contactBtn),
+                          if (ackBtn != null) ...[
+                            const SizedBox(height: 8),
+                            SizedBox(width: double.infinity, child: ackBtn),
+                          ],
+                        ],
+                      );
+                    }
+
+                    return Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 10,
+                      runSpacing: 8,
+                      children: [
+                        contactBtn,
+                        if (ackBtn != null) ackBtn,
+                      ],
+                    );
+                  },
                 ),
               ],
             ),

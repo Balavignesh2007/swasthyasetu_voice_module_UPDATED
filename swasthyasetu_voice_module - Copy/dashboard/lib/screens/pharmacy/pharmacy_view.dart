@@ -293,8 +293,10 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
       return const Center(child: Text('No active prescriptions pending for dispensing.'));
     }
 
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return ListView.builder(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
       itemCount: _orders.length,
       itemBuilder: (context, index) {
         final o = _orders[index];
@@ -302,7 +304,7 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(isMobile ? 14 : 20),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -320,8 +322,10 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
                 spacing: 12,
                 runSpacing: 6,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -338,7 +342,6 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
                       Text(
                         'Patient: ${o.patientName} (${o.healthId})',
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1E293B)),
@@ -419,10 +422,11 @@ class _PharmacyViewState extends State<PharmacyView> with SingleTickerProviderSt
   }
 
   Widget _buildInventoryTab() {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(isMobile ? 14 : 20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
